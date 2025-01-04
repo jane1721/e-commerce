@@ -35,8 +35,6 @@ erDiagram
         bigint id PK "유저 쿠폰 ID"
         bigint user_id FK "유저 ID"
         bigint coupon_id FK "쿠폰 ID"
-        string code "쿠폰 코드"
-        bigint discount_percent "할인 비율"
         boolean is_used "쿠폰 사용 여부"
         datetime created_at "생성 일자"
         datetime updated_at "수정 일자"
@@ -45,7 +43,9 @@ erDiagram
     ORDER {
         bigint id PK "주문 ID"
         bigint user_id FK "유저 ID"
-        bigint total_amount "총 금액"
+        bigint user_coupon_id FK "유저 쿠폰 ID"
+        bigint total_amount "주문 총 금액"
+        bigint final_amount "최종 금액"
         datetime created_at "주문 일자"
         datetime updated_at "수정 일자"
         string status "주문 상태"
@@ -145,8 +145,6 @@ erDiagram
     - `id` (PK): 유저 쿠폰 고유 식별자.
     - `user_id` (FK): 유저 ID
     - `coupon_id` (FK): 쿠폰 ID
-    - `code`: 쿠폰 코드 (참조)
-    - `discount_percent`: 할인 비율 (참조)
     - `is_used`: 쿠폰 사용 여부
     - `created_at`, `updated_at`: 생성 및 수정 일자.
 - **연결 관계:**
@@ -161,13 +159,16 @@ erDiagram
 - **필드:**
     - `id` (PK): 주문 고유 식별자
     - `user_id` (FK): 주문한 유저 ID
+    - `user_coupon_id` (FK): 유저 쿠폰 ID (nullable)
     - `total_amount`: 주문 총 금액
+    - `final_amount`: 최종 금액
     - `status`: 주문 상태
     - `created_at`, `updated_at`: 생성 및 수정 일자
 - **연결 관계:**
     - **`USER ||--o{ ORDER`**: 한 유저는 여러 주문을 생성할 수 있다.
     - **`ORDER ||--|{ ORDER_ITEM`**: 한 주문은 여러 주문 항목을 포함할 수 있다.
     - **`ORDER ||--o| PAYMENT`**: 한 주문은 하나의 결제 정보를 가진다.
+    - **`user_coupon_id`**: 주문에 쿠폰을 사용할 수도 있고 사용하지 않을 수도 있다.
 
 ---
 
