@@ -1,5 +1,6 @@
 package com.jane.ecommerce.interfaces.api;
 
+import com.jane.ecommerce.base.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
@@ -12,20 +13,20 @@ public class UserController {
 
     // 잔액 충전
     @PostMapping("/charge")
-    public ResponseEntity<ChargeResponse> chargeBalance(@RequestBody ChargeRequest request) {
+    public ResponseEntity<BaseResponseContent> chargeBalance(@RequestBody ChargeRequest request) {
 
-        ChargeResponse response = new ChargeResponse("success", "충전 성공하였습니다.", 20000);
+        BaseResponseContent responseContent =new BaseResponseContent(new ChargeResponse( 20000));
+        responseContent.setMessage("충전 요청 성공하였습니다.");
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseContent);
     }
 
     // 잔액 조회
-    @GetMapping("/users/{userId}/balance")
-    public ResponseEntity<BalanceResponse> getBalance(@PathVariable String userId) {
+    @GetMapping("/{userId}/balance")
+    public ResponseEntity<BaseResponseContent> getBalance(@PathVariable String userId) {
 
         BalanceResponse response = new BalanceResponse(userId, 20000);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new BaseResponseContent(response));
     }
-
 }

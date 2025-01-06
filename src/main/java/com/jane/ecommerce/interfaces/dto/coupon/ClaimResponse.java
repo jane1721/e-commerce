@@ -8,8 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ClaimResponse {
-
-    String status;
-    String message;
     String code;
 }
