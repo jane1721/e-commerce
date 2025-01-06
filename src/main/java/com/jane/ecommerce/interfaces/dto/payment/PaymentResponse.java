@@ -13,6 +13,6 @@ public class PaymentResponse {
     String paymentId;
     String status;
     int amount;
-    String paymentMethod;
+    String method;
     LocalDateTime updatedAt;
 }

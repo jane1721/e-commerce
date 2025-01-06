@@ -1,9 +1,10 @@
 package com.jane.ecommerce.interfaces.api;
 
+import com.jane.ecommerce.base.dto.response.BaseResponse;
+import com.jane.ecommerce.base.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.cart.CartDeleteRequest;
 import com.jane.ecommerce.interfaces.dto.cart.CartInsertRequest;
 import com.jane.ecommerce.interfaces.dto.cart.CartItemResponse;
-import com.jane.ecommerce.interfaces.dto.cart.CartStatusResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,24 +17,34 @@ public class CartController {
 
     // 장바구니 추가
     @PostMapping
-    public ResponseEntity<?> addToCart(@RequestBody CartInsertRequest request) {
+    public ResponseEntity<BaseResponse> addToCart(@RequestBody CartInsertRequest request) {
 
-        return ResponseEntity.ok(new CartStatusResponse("success", "장바구니 추가 성공하였습니다."));
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("장바구니 추가 성공하였습니다.");
+
+        return ResponseEntity.ok(baseResponse);
     }
 
-    @DeleteMapping("/carts")
-    public ResponseEntity<?> removeFromCart(@RequestBody CartDeleteRequest request) {
+    // 장바구니 삭제
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> removeFromCart(@RequestBody CartDeleteRequest request) {
 
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("장바구니 상품 삭제 성공하였습니다.");
 
-        return ResponseEntity.ok(new CartStatusResponse("success", "장바구니 상품 삭제 성공하였습니다."));
+        return ResponseEntity.ok(baseResponse);
     }
 
+    // 장바구니 조회
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<CartItemResponse>> getCartItems(@PathVariable String userId) {
+    public ResponseEntity<BaseResponseContent> getCartItems(@PathVariable String userId) {
 
         List<CartItemResponse> items = new ArrayList<>();
         items.add(new CartItemResponse("1", "Item A", 2, 5000));
+        items.add(new CartItemResponse("2", "Item B", 6, 8000));
 
-        return ResponseEntity.ok(items);
+        BaseResponseContent responseContent = new BaseResponseContent(items);
+
+        return ResponseEntity.ok(responseContent);
     }
 }
