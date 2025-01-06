@@ -8,8 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ChargeResponse {
-
-    String status;
-    String message;
     int currentBalance;
 }

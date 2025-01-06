@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PaymentRequest {
 
-    String orderId;
-    String paymentMethod;
+    String id;
+    String method;
 }
