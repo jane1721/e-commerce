@@ -73,6 +73,13 @@ erDiagram
     CART {
         bigint id PK "장바구니 ID"
         bigint user_id FK "유저 ID"
+        datetime created_at "생성 일자"
+        datetime updated_at "수정 일자"
+    }
+
+    CART_ITEM {
+        bigint id PK "장바구니 상품 ID"
+        bigint cart_id FK "장바구니 ID"
         bigint item_id FK "상품 ID"
         int quantity "수량"
         datetime created_at "생성 일자"
@@ -84,9 +91,10 @@ erDiagram
     ITEM ||--|{ ORDER_ITEM : "is referenced by"
     USER ||--o{ USER_COUPON : "claims many"
     COUPON ||--o{ USER_COUPON : "has many"
-    USER ||--o{ CART : "has many"
-    ITEM ||--o{ CART : "is in many"
-    ORDER ||--o| PAYMENT : "has one"
+    USER ||--o| CART : "may have one"
+    CART ||--o{ CART_ITEM : "has many"
+    ITEM ||--o{ CART_ITEM : "is in many"
+    ORDER ||--|| PAYMENT : "has one"
 ```
 
 ## **테이블 및 연관관계 설명**
@@ -105,7 +113,7 @@ erDiagram
 - **연결 관계:**
     - **`USER ||--o{ ORDER`**: 한 명의 유저는 여러 주문을 생성할 수 있다.
     - **`USER ||--o{ USER_COUPON`**: 유저는 여러 쿠폰을 소유할 수 있다.
-    - **`USER ||--o{ CART`**: 유저는 여러 장바구니 항목을 가질 수 있다.
+    - **`USER ||--o{ CART`**: 유저는 하나의 장바구니를 소유한다
 
 ---
 
@@ -120,7 +128,7 @@ erDiagram
     - `created_at`, `updated_at`: 생성 및 수정 일자
 - **연결 관계:**
     - **`ITEM ||--|{ ORDER_ITEM`**: 한 상품은 여러 주문 항목에 참조될 수 있다.
-    - **`ITEM ||--o{ CART`**: 한 상품은 여러 장바구니 항목에 포함될 수 있다.
+    - **`ITEM ||--o{ CART_ITEM`**: 한 상품은 여러 장바구니 상품 항목에 포함될 수 있다.
 
 ---
 
@@ -208,23 +216,40 @@ erDiagram
 - **필드:**
     - `id` (PK): 장바구니 고유 식별자
     - `user_id` (FK): 유저 ID
-    - `item_id` (FK): 상품 ID
-    - `quantity`: 장바구니에 담긴 수량
     - `created_at`, `updated_at`: 생성 및 수정 일자
 - **연결 관계:**
-    - **`USER ||--o{ CART`**: 유저는 여러 장바구니 항목을 가질 수 있다.
-    - **`ITEM ||--o{ CART`**: 한 상품은 여러 장바구니 항목에 담길 수 있다.
+    - **`USER ||--|| CART`**: 유저는 하나의 장바구니를 소유한다. 
+    - **`CART ||--o{ CART_ITEM`**: 장바구니는 여러 장바구니 상품 항목을 가질 수 있다.
+
+---
+
+### **9. CART_ITEM 테이블**
+
+- **설명:** 장바구니에 포함된 상품 정보를 저장하는 테이블 
+- **필드:**
+    - `id (PK)`: 장바구니 상품 고유 식별자 
+    - `cart_id` (FK): 장바구니 ID 
+    - `item_id` (FK): 상품 ID 
+    - `quantity`: 상품의 수량 
+    - `created_at`, `updated_at`: 생성 및 수정 일자
+- **연결 관계:**
+    - **`CART ||--o{ CART_ITEM`**: 장바구니는 여러 장바구니 상품 항목을 포함한다. 
+    - **`ITEM ||--o{ CART_ITEM`**: 한 상품은 여러 장바구니 상품 항목에 참조될 수 있다.
 
 ---
 
 ### **ERD 관계 요약**
 
+- **1:1 관계:**
+    - `USER` ↔ `CART`
+    - `ORDER` ↔ `PAYMENT`
 - **1:N 관계:**
-    - `USER` ↔ `ORDER`, `USER_COUPON`, `CART`
+    - `USER` ↔ `ORDER`, `USER_COUPON`
     - `COUPON` ↔ `USER_COUPON`
-    - `ORDER` ↔ `ORDER_ITEM`, `PAYMENT`
+    - `ORDER` ↔ `ORDER_ITEM`
     - `ITEM` ↔ `ORDER_ITEM`, `CART`
+    - `CART` ↔ `CART_ITEM`
 - **M:N 관계 (중간 테이블로 표현):**
     - `USER_COUPON` (유저와 쿠폰 간의 다대다 관계)
-    - `CART` (유저와 상품 간의 다대다 관계)
+    - `CART_ITEM` (유저와 상품 간의 다대다 관계)
     - `ORDER_ITEM` (주문과 상품 간의 다대다 관계)
