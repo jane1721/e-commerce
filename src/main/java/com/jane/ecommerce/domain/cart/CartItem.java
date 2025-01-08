@@ -1,6 +1,7 @@
 package com.jane.ecommerce.domain.cart;
 
 import com.jane.ecommerce.domain.item.Item;
+import com.jane.ecommerce.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +20,8 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

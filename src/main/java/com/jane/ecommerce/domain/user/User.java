@@ -1,7 +1,7 @@
 package com.jane.ecommerce.domain.user;
 
 import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.domain.cart.Cart;
+import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.order.Order;
 import jakarta.persistence.*;
@@ -33,8 +33,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Long balance;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart cart;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
