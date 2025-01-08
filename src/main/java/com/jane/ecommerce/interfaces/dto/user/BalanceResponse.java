@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BalanceResponse {
 
-    String userId;
-    int amount;
+    Long userId;
+    Long balance;
 }

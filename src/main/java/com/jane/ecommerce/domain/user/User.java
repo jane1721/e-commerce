@@ -1,6 +1,8 @@
 package com.jane.ecommerce.domain.user;
 
+import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.entity.BaseEntity;
+import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.order.Order;
@@ -24,7 +26,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -41,4 +43,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCoupon> userCoupons;
+
+    // 잔액 충전 메서드
+    public void chargeBalance(Long amount) {
+        if (amount <= 0) {
+            throw new BaseCustomException(BaseErrorCode.INVALID_PARAMETER, new String[]{ String.valueOf(amount) });
+        }
+        this.balance += amount;
+    }
 }

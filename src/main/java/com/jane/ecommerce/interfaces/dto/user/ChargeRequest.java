@@ -10,5 +10,5 @@ import lombok.Setter;
 public class ChargeRequest {
 
     String userId;
-    int amount;
+    Long amount;
 }

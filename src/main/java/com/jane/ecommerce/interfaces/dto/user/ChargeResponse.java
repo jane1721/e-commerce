@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ChargeResponse {
-    int currentBalance;
+    Long currentBalance;
 }
