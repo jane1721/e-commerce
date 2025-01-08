@@ -70,16 +70,9 @@ erDiagram
         datetime updated_at "수정 일자"
     }
 
-    CART {
-        bigint id PK "장바구니 ID"
-        bigint user_id FK "유저 ID"
-        datetime created_at "생성 일자"
-        datetime updated_at "수정 일자"
-    }
-
     CART_ITEM {
         bigint id PK "장바구니 상품 ID"
-        bigint cart_id FK "장바구니 ID"
+        bigint user_id FK "유저 ID"
         bigint item_id FK "상품 ID"
         int quantity "수량"
         datetime created_at "생성 일자"
@@ -88,11 +81,10 @@ erDiagram
 
     USER ||--o{ ORDER : "places many"
     ORDER ||--|{ ORDER_ITEM : "contains many"
-    ITEM ||--|{ ORDER_ITEM : "is referenced by"
+    ITEM ||--o{ ORDER_ITEM : "is referenced by"
     USER ||--o{ USER_COUPON : "claims many"
     COUPON ||--o{ USER_COUPON : "has many"
-    USER ||--o| CART : "may have one"
-    CART ||--o{ CART_ITEM : "has many"
+    USER ||--o{ CART_ITEM : "has many"
     ITEM ||--o{ CART_ITEM : "is in many"
     ORDER ||--|| PAYMENT : "has one"
 ```
@@ -113,7 +105,7 @@ erDiagram
 - **연결 관계:**
     - **`USER ||--o{ ORDER`**: 한 명의 유저는 여러 주문을 생성할 수 있다.
     - **`USER ||--o{ USER_COUPON`**: 유저는 여러 쿠폰을 소유할 수 있다.
-    - **`USER ||--o{ CART`**: 유저는 하나의 장바구니를 소유한다
+    - **`USER ||--o{ CART_ITEM`**: 유저는 여러 장바구니 상품 항목을 가질 수 있다.
 
 ---
 
@@ -210,30 +202,17 @@ erDiagram
 
 ---
 
-### **8. CART 테이블**
+### **8. CART_ITEM 테이블**
 
-- **설명:** 장바구니 정보를 저장하는 테이블
+- **설명:** 장바구니에 포함된 상품 정보를 저장하는 테이블
 - **필드:**
     - `id` (PK): 장바구니 고유 식별자
     - `user_id` (FK): 유저 ID
+    - `item_id` (FK): 상품 ID
+    - `quantity`: 장바구니에 담긴 상품의 수량
     - `created_at`, `updated_at`: 생성 및 수정 일자
 - **연결 관계:**
-    - **`USER ||--|| CART`**: 유저는 하나의 장바구니를 소유한다. 
-    - **`CART ||--o{ CART_ITEM`**: 장바구니는 여러 장바구니 상품 항목을 가질 수 있다.
-
----
-
-### **9. CART_ITEM 테이블**
-
-- **설명:** 장바구니에 포함된 상품 정보를 저장하는 테이블 
-- **필드:**
-    - `id (PK)`: 장바구니 상품 고유 식별자 
-    - `cart_id` (FK): 장바구니 ID 
-    - `item_id` (FK): 상품 ID 
-    - `quantity`: 상품의 수량 
-    - `created_at`, `updated_at`: 생성 및 수정 일자
-- **연결 관계:**
-    - **`CART ||--o{ CART_ITEM`**: 장바구니는 여러 장바구니 상품 항목을 포함한다. 
+    - **`USER ||--o{ CART_ITEM`**: 유저는 장바구니에 여러 상품 항목을 담을 수 있다.
     - **`ITEM ||--o{ CART_ITEM`**: 한 상품은 여러 장바구니 상품 항목에 참조될 수 있다.
 
 ---
@@ -241,14 +220,12 @@ erDiagram
 ### **ERD 관계 요약**
 
 - **1:1 관계:**
-    - `USER` ↔ `CART`
     - `ORDER` ↔ `PAYMENT`
 - **1:N 관계:**
-    - `USER` ↔ `ORDER`, `USER_COUPON`
+    - `USER` ↔ `ORDER`, `USER_COUPON`, `CART_ITEM`
     - `COUPON` ↔ `USER_COUPON`
     - `ORDER` ↔ `ORDER_ITEM`
     - `ITEM` ↔ `ORDER_ITEM`, `CART`
-    - `CART` ↔ `CART_ITEM`
 - **M:N 관계 (중간 테이블로 표현):**
     - `USER_COUPON` (유저와 쿠폰 간의 다대다 관계)
     - `CART_ITEM` (유저와 상품 간의 다대다 관계)
