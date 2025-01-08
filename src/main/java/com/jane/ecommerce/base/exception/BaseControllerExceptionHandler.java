@@ -1,6 +1,5 @@
 package com.jane.ecommerce.base.exception;
 
-
 import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.dto.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,7 @@ public class BaseControllerExceptionHandler extends ResponseEntityExceptionHandl
         baseResponse.setMessage(baseErrorCode.getMessage());
         baseResponse.setStatus(baseErrorCode.getHttpStatus().toString());
 
-        return ResponseEntity
-                .status(BaseErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
-                .body(baseResponse);
+        return new ResponseEntity<>(baseResponse, baseErrorCode.getHttpStatus());
     }
 
     @ExceptionHandler(BaseCustomException.class)
@@ -31,11 +28,9 @@ public class BaseControllerExceptionHandler extends ResponseEntityExceptionHandl
         BaseErrorCode baseErrorCode = e.getBaseErrorCode();
 
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setMessage(baseErrorCode.getMessage());
+        baseResponse.setMessage(e.formatMessage());
         baseResponse.setStatus(baseErrorCode.getHttpStatus().toString());
 
-        return ResponseEntity
-            .status(e.getBaseErrorCode().getHttpStatus())
-            .body(baseResponse);
+        return new ResponseEntity<>(baseResponse, baseErrorCode.getHttpStatus());
     }
 }
