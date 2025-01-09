@@ -12,8 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor
 @Tag(name = "User API", description = "사용자 API")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

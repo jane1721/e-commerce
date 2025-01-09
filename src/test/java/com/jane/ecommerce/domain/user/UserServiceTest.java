@@ -20,10 +20,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    @Mock
+    @Mock // 어노테이션 기반 Mock 객체 생성
     private UserRepository userRepository;
 
-    @InjectMocks
+    @InjectMocks // 어노테이션 기반 의존성 주입
     private UserService userService;
 
     private User user;
