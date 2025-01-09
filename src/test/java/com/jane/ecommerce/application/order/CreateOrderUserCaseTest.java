@@ -1,4 +1,4 @@
-package com.jane.ecommerce.application;
+package com.jane.ecommerce.application.order;
 import com.jane.ecommerce.application.order.CreateOrderUseCase;
 import com.jane.ecommerce.domain.coupon.CouponService;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
