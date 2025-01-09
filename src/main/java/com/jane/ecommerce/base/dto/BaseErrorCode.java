@@ -20,6 +20,7 @@ public enum BaseErrorCode {
 
     // Custom Error
     INSUFFICIENT_STOCK(HttpStatus.CONFLICT, "Insufficient stock for item : {}"),
+    INSUFFICIENT_BALANCE(HttpStatus.CONFLICT, "Insufficient fund for user : {}")
     ;
 
     private final HttpStatus httpStatus;

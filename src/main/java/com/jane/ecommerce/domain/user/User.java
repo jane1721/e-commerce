@@ -51,4 +51,12 @@ public class User extends BaseEntity {
         }
         this.balance += amount;
     }
+
+    // 잔액 차감 메서드
+    public void deductBalance(Long amount) {
+        if (this.balance < amount) {
+            throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_BALANCE, new String[]{ String.valueOf(this.id) });
+        }
+        this.balance -= amount;
+    }
 }

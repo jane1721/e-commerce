@@ -43,4 +43,17 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
     }
+
+    // 잔액 차감
+    public void deductUserBalance(Long userId, Long amount) {
+
+        // 유저 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
+
+        // 도메인 엔티티 메서드 호출
+        user.deductBalance(amount);
+
+        userRepository.save(user);
+    }
 }

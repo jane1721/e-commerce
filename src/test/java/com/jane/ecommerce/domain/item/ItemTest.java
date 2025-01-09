@@ -39,4 +39,35 @@ public class ItemTest {
         // 예외 메시지 확인
         assertEquals(BaseErrorCode.INSUFFICIENT_STOCK, exception.getBaseErrorCode());
     }
+
+    // 재고 복구 성공
+    @Test
+    void testRestoreStock_Success() {
+        // given
+        Item item = new Item();
+        item.setStock(10); // 초기 재고 10
+
+        // when
+        item.restoreStock(5); // 5 복구
+
+        // then
+        assertEquals(15, item.getStock()); // 재고가 15로 증가해야 함
+    }
+
+    // 재고 복구 예외 (음수로 복구 시도)
+    @Test
+    void restoreStock_negativeQuantity() {
+        // given
+        Item item = new Item();
+        item.setStock(10); // 초기 재고 10
+
+        // when & then
+        BaseCustomException exception = assertThrows(
+                BaseCustomException.class,
+                () -> item.restoreStock(-5) // 음수 복구 시도
+        );
+
+        // 예외 메시지 확인
+        assertEquals(BaseErrorCode.INVALID_PARAMETER, exception.getBaseErrorCode());
+    }
 }

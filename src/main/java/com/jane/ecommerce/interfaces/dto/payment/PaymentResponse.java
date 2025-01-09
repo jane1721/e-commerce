@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class PaymentResponse {
-    String paymentId;
+    Long id;
     String status;
-    int amount;
+    Long amount;
     String method;
     LocalDateTime updatedAt;
 }

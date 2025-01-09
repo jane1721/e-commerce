@@ -1,5 +1,6 @@
 package com.jane.ecommerce.domain.payment;
 
+import com.jane.ecommerce.base.entity.BaseEntity;
 import com.jane.ecommerce.domain.order.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "payment")
 @Entity
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

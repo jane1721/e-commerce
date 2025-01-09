@@ -40,11 +40,22 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
+    // 재고 차감
     public void decreaseStock(int quantity) {
         // 재고가 부족한 경우 예외 발생
         if (this.stock < quantity) {
             throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_STOCK, new String[]{ this.id.toString() });
         }
         this.stock -= quantity;
+    }
+
+    // 재고 복구
+    public void restoreStock(int quantity) {
+        // 음수로 재고 복구 시도할 경우 예외 발생
+        if (quantity < 0) {
+            throw new BaseCustomException(BaseErrorCode.INVALID_PARAMETER);
+        }
+
+        this.stock += quantity;  // 주문이 취소될 때, 차감된 수량만큼 복구
     }
 }

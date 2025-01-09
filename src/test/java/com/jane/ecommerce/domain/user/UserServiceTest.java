@@ -153,4 +153,52 @@ public class UserServiceTest {
 
         assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
     }
+
+    // 잔액 차감 성공
+    @Test
+    void testDeductUserBalance_Success() {
+        // given
+        long deductAmount = 500L;
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // when
+        userService.deductUserBalance(user.getId(), deductAmount);
+
+        // then
+        assertEquals(500L, user.getBalance()); // 차감 후 잔액 확인
+        verify(userRepository).save(user); // 저장 메서드 호출 확인
+    }
+
+    // 잔액 부족으로 차감 실패
+    @Test
+    void testDeductUserBalance_InsufficientBalance() {
+        // given
+        long deductAmount = 1500L; // 잔액보다 많은 금액 차감 요청
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // when & then
+        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+            userService.deductUserBalance(user.getId(), deductAmount);
+        });
+
+        assertEquals(BaseErrorCode.INSUFFICIENT_BALANCE, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(1000L, user.getBalance()); // 잔액이 변경되지 않았음을 확인
+        verify(userRepository, never()).save(user); // 저장 메서드가 호출되지 않았음을 확인
+    }
+
+    // 존재하지 않는 유저로 인해 차감 실패
+    @Test
+    void testDeductUserBalance_UserNotFound() {
+        // given
+        long deductAmount = 500L;
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+            userService.deductUserBalance(999999L, deductAmount); // 존재하지 않는 유저 ID
+        });
+
+        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        verify(userRepository, never()).save(any(User.class)); // 저장 메서드가 호출되지 않았음을 확인
+    }
 }
