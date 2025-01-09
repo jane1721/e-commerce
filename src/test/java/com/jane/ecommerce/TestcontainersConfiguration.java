@@ -16,8 +16,8 @@ class TestcontainersConfiguration {
 	static {
 		MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
 			.withDatabaseName("ecommerce")
-			.withUsername("test")
-			.withPassword("test");
+			.withUsername("ecommerce")
+			.withPassword("ecommerce");
 		MYSQL_CONTAINER.start();
 
 		System.setProperty("spring.datasource.url", MYSQL_CONTAINER.getJdbcUrl() + "?characterEncoding=UTF-8&serverTimezone=UTC");
