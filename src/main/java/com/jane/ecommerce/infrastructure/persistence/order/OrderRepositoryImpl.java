@@ -2,6 +2,9 @@ package com.jane.ecommerce.infrastructure.persistence.order;
 
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,5 +28,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Optional<Order> findByIdWithOrderItems(Long id) {
         return orderJpaRepository.findByIdWithOrderItems(id);
+    }
+
+    @Override
+    public List<Order> findOrdersByCreatedAtAfter(LocalDateTime threeDaysAgo) {
+        return orderJpaRepository.findOrdersByCreatedAtAfter(threeDaysAgo);
     }
 }

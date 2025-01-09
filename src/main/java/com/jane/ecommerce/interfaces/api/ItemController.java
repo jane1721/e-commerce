@@ -1,6 +1,7 @@
 package com.jane.ecommerce.interfaces.api;
 
 import com.jane.ecommerce.application.item.GetItemsUseCase;
+import com.jane.ecommerce.application.item.GetTopItemsUseCase;
 import com.jane.ecommerce.base.dto.response.BaseResponseContent;
 import com.jane.ecommerce.base.dto.response.BaseResponsePage;
 import com.jane.ecommerce.interfaces.dto.item.ItemResponse;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Item API", description = "상품 API")
@@ -26,6 +26,7 @@ import java.util.List;
 public class ItemController {
 
     private final GetItemsUseCase getItemsUseCase;
+    private final GetTopItemsUseCase getTopItemsUseCase;
 
     // 상품 목록 페이징 조회
     @Operation(summary = "상품 목록 조회", description = "상품 목록을 조회합니다.")
@@ -43,12 +44,7 @@ public class ItemController {
     @GetMapping("/top")
     public ResponseEntity<BaseResponseContent> getTopItems() {
 
-        List<TopItemResponse> items = new ArrayList<>();
-        items.add(new TopItemResponse("3", "Product A", 100));
-        items.add(new TopItemResponse("5", "Product B", 80));
-        items.add(new TopItemResponse("6", "Product C", 75));
-        items.add(new TopItemResponse("7", "Product E", 50));
-        items.add(new TopItemResponse("1", "Product D", 45));
+        List<TopItemResponse> items = getTopItemsUseCase.execute();
 
         return ResponseEntity.ok(new BaseResponseContent(items));
     }
