@@ -5,6 +5,7 @@ import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.payment.Payment;
 import com.jane.ecommerce.domain.user.User;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,13 @@ public class Order extends BaseEntity {
     private String status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
+
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this); // 양방향 관계 설정
+    }
 }

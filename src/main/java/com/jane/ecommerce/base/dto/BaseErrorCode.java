@@ -19,6 +19,7 @@ public enum BaseErrorCode {
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported media type"),
 
     // Custom Error
+    INSUFFICIENT_STOCK(HttpStatus.CONFLICT, "Insufficient stock for item : {}"),
     ;
 
     private final HttpStatus httpStatus;

@@ -17,6 +17,6 @@ public class OrderResponse {
     String id;
     String status;
     List<OrderItemDTO> orderItems;
-    int totalAmount;
+    Long totalAmount;
     LocalDateTime createAt;
 }

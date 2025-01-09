@@ -1,6 +1,6 @@
 package com.jane.ecommerce.domain.item;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -8,6 +8,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import com.jane.ecommerce.base.dto.BaseErrorCode;
+import com.jane.ecommerce.base.exception.BaseCustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,5 +59,39 @@ public class ItemServiceTest {
         assertEquals(result.getContent().get(1).getName(), "Test Item 2");
 
         verify(itemRepository, times(1)).findAll(pageable);
+    }
+
+    // 특정 상품 조회 성공
+    @Test
+    public void testGetItemById_Success() {
+        // given
+        Long itemId = 1L;
+        Item item = new Item(1L, "Test Item 1", 1000L, 10, null, null);
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+
+        // when
+        Item result = itemService.getItemById(itemId);
+
+        // then
+        assertNotNull(result);  // 상품이 반환되어야 함
+        verify(itemRepository, times(1)).findById(itemId); // findById 메서드가 한번 호출되었는지 확인
+    }
+
+    // 존재하지 않는 상품 조회 실패
+    @Test
+    public void testGetItemById_NotFound() {
+        // given
+        Long itemId = 999999L;
+
+        // 상품이 존재하지 않는 경우 (Optional.empty() 반환)
+        when(itemRepository.findById(itemId)).thenReturn(Optional.empty());
+
+        // when
+        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+            itemService.getItemById(itemId);
+        });
+
+        // then
+        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
     }
 }

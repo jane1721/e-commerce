@@ -1,21 +1,27 @@
 package com.jane.ecommerce.interfaces.api;
 
+import com.jane.ecommerce.application.order.CreateOrderUseCase;
+import com.jane.ecommerce.application.order.GetOrderUseCase;
+import com.jane.ecommerce.application.order.UpdateOrderStatusUseCase;
 import com.jane.ecommerce.base.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.order.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Tag(name = "Order API", description = "주문 API")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
+
+    private final CreateOrderUseCase createOrderUseCase;
+    private final GetOrderUseCase getOrderUseCase;
+    private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
 
     // 주문 생성
     @Operation(summary = "주문 생성", description = "주문 내역을 가지고 주문을 생성합니다.")
@@ -23,12 +29,14 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<BaseResponseContent> createOrder(@RequestBody OrderCreateRequest orderCreateRequest) {
 
-        OrderCreateResponse response = new OrderCreateResponse("111", "PENDING", 15000, LocalDateTime.now());
+        OrderCreateResponse response = createOrderUseCase.execute(orderCreateRequest.getUserId(), orderCreateRequest.getOrderItems(), orderCreateRequest.getUserCouponId());
 
         BaseResponseContent responseContent = new BaseResponseContent(response);
         responseContent.setMessage("주문 성공하였습니다.");
 
-        return ResponseEntity.ok(responseContent);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseContent);
     }
 
     // 특정 주문 조회
@@ -37,10 +45,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponseContent> getOrder(@PathVariable String id) {
 
-        List<OrderItemDTO> orderItems = new ArrayList<>();
-        orderItems.add(new OrderItemDTO("1", 2));
-        orderItems.add(new OrderItemDTO("2", 5));
-        OrderResponse orderResponse = new OrderResponse("123", "CONFIRMED", orderItems, 15000, LocalDateTime.of(2025, 1, 1, 12, 0, 0));
+        OrderResponse orderResponse = getOrderUseCase.execute(id);
 
         BaseResponseContent responseContent = new BaseResponseContent(orderResponse);
 
@@ -52,15 +57,15 @@ public class OrderController {
     @Parameter(name = "id", description = "주문 ID", required = true)
     @Parameter(name = "orderUpdateRequest", description = "주문 상태 업데이트 요청 정보", required = true)
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponseContent> updateOrderStatusConfirmed(@PathVariable String id, @RequestBody OrderUpdateRequest orderUpdateRequest) {
+    public ResponseEntity<BaseResponseContent> updateOrderStatus(@PathVariable String id, @RequestBody OrderUpdateRequest orderUpdateRequest) {
 
-        OrderUpdateResponse response = new OrderUpdateResponse(id, orderUpdateRequest.getStatus(), LocalDateTime.now());
+        OrderUpdateResponse response = updateOrderStatusUseCase.execute(id, orderUpdateRequest);
+
         BaseResponseContent baseResponseContent = new BaseResponseContent(response);
 
-        if (orderUpdateRequest.getStatus().equals("CONFIRMED")) {
+        if ("CONFIRMED".equals(orderUpdateRequest.getStatus())) {
             baseResponseContent.setMessage("주문이 확정되었습니다.");
-
-        } else if (orderUpdateRequest.getStatus().equals("CANCELLED")) {
+        } else if ("CANCELLED".equals(orderUpdateRequest.getStatus())) {
             baseResponseContent.setMessage("주문이 취소되었습니다.");
         }
 

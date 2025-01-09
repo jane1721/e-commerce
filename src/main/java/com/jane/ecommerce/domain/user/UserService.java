@@ -5,6 +5,7 @@ import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,14 @@ public class UserService {
     // 잔액 조회
     public BalanceResponse getBalance(String userId) {
         User user = userRepository.findById(Long.parseLong(userId))
-            .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ userId }));
+                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ userId }));
 
         return new BalanceResponse(user.getId(), user.getBalance());
+    }
+
+    // 유저 조회
+    public User getUserById(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
     }
 }
