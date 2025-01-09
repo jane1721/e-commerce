@@ -11,3 +11,8 @@
 ```bash
 docker-compose up -d
 ```
+
+### Swagger API Specification
+[Swagger-ui.pdf](https://github.com/user-attachments/files/18367310/Swagger-ui.pdf)
+
+
