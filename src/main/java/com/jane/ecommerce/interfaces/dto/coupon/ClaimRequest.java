@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ClaimRequest {
 
     String userId;
+    String couponId;
 }

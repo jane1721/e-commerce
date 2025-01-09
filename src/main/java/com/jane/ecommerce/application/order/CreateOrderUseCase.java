@@ -2,6 +2,7 @@ package com.jane.ecommerce.application.order;
 
 import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.coupon.CouponService;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.item.ItemService;
@@ -24,6 +25,7 @@ public class CreateOrderUseCase {
     private final OrderService orderService;
     private final UserService userService;
     private final ItemService itemService;
+    private final CouponService couponService;
 
     public OrderCreateResponse execute(String userId, List<OrderItemDTO> orderItemDTOs, String userCouponId) {
 
@@ -44,8 +46,8 @@ public class CreateOrderUseCase {
             .collect(Collectors.toList());
 
 
-        // TODO userCouponId 로 UserCoupon 객체 조회
-        UserCoupon userCoupon = new UserCoupon();
+        // userCouponId 로 UserCoupon 객체 조회
+        UserCoupon userCoupon = couponService.getUserCouponById(Long.parseLong(userCouponId));
 
         // 주문 생성
         Order order = orderService.createOrder(user, orderItems, userCoupon);
