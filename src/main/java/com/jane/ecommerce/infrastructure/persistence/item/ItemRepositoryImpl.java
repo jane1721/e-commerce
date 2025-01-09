@@ -23,4 +23,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Optional<Item> findById(Long itemId) {
         return itemJpaRepository.findById(itemId);
     }
+
+    @Override
+    public Item save(Item item) {
+        return itemJpaRepository.save(item);
+    }
 }

@@ -30,20 +30,22 @@ public class CreateOrderUseCase {
         // userId 로 User 객체 조회
         User user = userService.getUserById(Long.parseLong(userId));
 
-        // TODO userCouponId 로 UserCoupon 객체 조회
-        UserCoupon userCoupon = new UserCoupon();
-
         // OrderItemDTO -> OrderItem 변환
         List<OrderItem> orderItems = orderItemDTOs.stream()
             .map(dto -> {
                 Item item = itemService.getItemById(Long.parseLong(dto.getItemId())); // itemId 로 Item 조회
 
+                // 재고 차감
+                item.decreaseStock(dto.getQuantity());
+                itemService.save(item); // 재고 업데이트
+
                 return new OrderItem(null, null, item, dto.getQuantity());
             })
             .collect(Collectors.toList());
 
-        // 재고 체크
-        orderItems.forEach(OrderItem::checkStock); // 재고 부족 체크
+
+        // TODO userCouponId 로 UserCoupon 객체 조회
+        UserCoupon userCoupon = new UserCoupon();
 
         // 주문 생성
         Order order = orderService.createOrder(user, orderItems, userCoupon);

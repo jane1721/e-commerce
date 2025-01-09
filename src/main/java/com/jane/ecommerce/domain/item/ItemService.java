@@ -9,8 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -24,5 +24,9 @@ public class ItemService {
     public Item getItemById(Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(itemId) }));
+    }
+
+    public Item save(Item item) {
+        return itemRepository.save(item);
     }
 }

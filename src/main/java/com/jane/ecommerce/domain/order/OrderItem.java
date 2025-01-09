@@ -31,11 +31,4 @@ public class OrderItem extends BaseEntity {
 
     @Column(nullable = false)
     private Integer quantity;
-
-    public void checkStock() {
-        // 재고가 부족한 경우 예외 발생
-        if (this.quantity > this.item.getStock()) {
-            throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_STOCK, new String[]{ this.item.getId().toString() });
-        }
-    }
 }
