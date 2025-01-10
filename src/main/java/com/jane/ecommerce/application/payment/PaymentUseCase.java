@@ -2,7 +2,6 @@ package com.jane.ecommerce.application.payment;
 
 import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.item.Item;
-import com.jane.ecommerce.domain.item.ItemService;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderService;
@@ -25,7 +24,6 @@ public class PaymentUseCase {
     private final PaymentService paymentService;
     private final UserService userService; // 사용자 잔액 관련 서비스
     private final OrderService orderService; // 주문 관련 서비스
-    private final ItemService itemService; // 상품 재고 관련 서비스
     private final ExternalPlatformService externalPlatformService; // 외부 데이터 전송 서비스
 
     public PaymentCreateResponse processPayment(PaymentRequest paymentRequest) {
