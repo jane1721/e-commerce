@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.jane.ecommerce.base.dto.BaseErrorCode;
@@ -13,12 +12,13 @@ import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderRepository;
 import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class ItemService {
@@ -37,11 +37,12 @@ public class ItemService {
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(itemId) }));
     }
 
+    @Transactional
     public Item save(Item item) {
         return itemRepository.save(item);
     }
 
-    @Transactional  // 트랜잭션 범위 내에서 동작
+    // 상위 상품 조회
     public List<TopItemResponse> getTopItems() {
         // 최근 3일간의 날짜 계산
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);

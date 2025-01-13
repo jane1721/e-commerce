@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -16,6 +17,7 @@ public class GetCouponsByUserIdUseCase {
 
     private final CouponService couponService;
 
+    @Transactional(readOnly = true)
     public List<CouponResponse> execute(String userId) {
         // 보유 쿠폰 조회
         List<UserCoupon> userCoupons = couponService.getAvailableCoupons(Long.valueOf(userId));

@@ -5,17 +5,19 @@ import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Service
 public class UserService {
 
     private final UserRepository userRepository;
 
     // 잔액 충전
+    @Transactional
     public ChargeResponse chargeBalance(ChargeRequest request) {
 
         // 유저 조회
@@ -45,6 +47,7 @@ public class UserService {
     }
 
     // 잔액 차감
+    @Transactional
     public void deductUserBalance(Long userId, Long amount) {
 
         // 유저 조회

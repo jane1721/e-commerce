@@ -6,6 +6,7 @@ import com.jane.ecommerce.interfaces.dto.order.OrderUpdateRequest;
 import com.jane.ecommerce.interfaces.dto.order.OrderUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -13,6 +14,7 @@ public class UpdateOrderStatusUseCase {
 
     private final OrderService orderService;
 
+    @Transactional
     public OrderUpdateResponse execute(String id, OrderUpdateRequest request) {
         Order order = orderService.updateOrderStatus(Long.valueOf(id), request.getStatus());
 
@@ -22,5 +24,4 @@ public class UpdateOrderStatusUseCase {
                 order.getUpdatedAt()
         );
     }
-
 }
