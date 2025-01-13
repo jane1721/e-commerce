@@ -29,7 +29,6 @@ public class UserController {
         ChargeResponse response = userService.chargeBalance(request);
 
         BaseResponseContent responseContent = new BaseResponseContent(response);
-        responseContent.setMessage("충전 요청 성공하였습니다.");
 
         return ResponseEntity.ok(responseContent);
     }

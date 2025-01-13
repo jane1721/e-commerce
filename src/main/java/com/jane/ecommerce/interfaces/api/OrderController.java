@@ -32,7 +32,6 @@ public class OrderController {
         OrderCreateResponse response = createOrderUseCase.execute(orderCreateRequest.getUserId(), orderCreateRequest.getOrderItems(), orderCreateRequest.getUserCouponId());
 
         BaseResponseContent responseContent = new BaseResponseContent(response);
-        responseContent.setMessage("주문 성공하였습니다.");
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -62,12 +61,6 @@ public class OrderController {
         OrderUpdateResponse response = updateOrderStatusUseCase.execute(id, orderUpdateRequest);
 
         BaseResponseContent baseResponseContent = new BaseResponseContent(response);
-
-        if ("CONFIRMED".equals(orderUpdateRequest.getStatus())) {
-            baseResponseContent.setMessage("주문이 확정되었습니다.");
-        } else if ("CANCELLED".equals(orderUpdateRequest.getStatus())) {
-            baseResponseContent.setMessage("주문이 취소되었습니다.");
-        }
 
         return ResponseEntity.ok(baseResponseContent);
     }

@@ -31,12 +31,12 @@ public class ItemController {
     // 상품 목록 페이징 조회
     @Operation(summary = "상품 목록 조회", description = "상품 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<BaseResponsePage> getItems(
+    public ResponseEntity<BaseResponsePage<ItemResponse>> getItems(
         @PageableDefault(page = 0, size = Integer.MAX_VALUE) Pageable pageable
     ) {
         Page<ItemResponse> items = getItemsUseCase.execute(pageable);
 
-        return ResponseEntity.ok(new BaseResponsePage(items));
+        return ResponseEntity.ok(new BaseResponsePage<ItemResponse>(items));
     }
 
     // 상위 상품 조회

@@ -30,12 +30,6 @@ public class PaymentController {
 
         BaseResponseContent responseContent = new BaseResponseContent(response);
 
-        if (response.getStatus().equals("INITIATED")) {
-            responseContent.setMessage("결제 성공하였습니다.");
-        } else {
-            responseContent.setMessage("결제 실패하였습니다.");
-        }
-
         return ResponseEntity.ok(responseContent);
     }
 

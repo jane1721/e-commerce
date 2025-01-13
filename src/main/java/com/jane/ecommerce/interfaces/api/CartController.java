@@ -26,7 +26,6 @@ public class CartController {
     public ResponseEntity<BaseResponse> addToCart(@RequestBody CartInsertRequest cartInsertRequest) {
 
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setMessage("장바구니 추가 성공하였습니다.");
 
         return ResponseEntity.ok(baseResponse);
     }
@@ -38,7 +37,6 @@ public class CartController {
     public ResponseEntity<BaseResponse> removeFromCart(@RequestBody CartDeleteRequest cartDeleteRequest) {
 
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setMessage("장바구니 상품 삭제 성공하였습니다.");
 
         return ResponseEntity.ok(baseResponse);
     }

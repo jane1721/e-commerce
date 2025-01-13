@@ -33,12 +33,8 @@ public class CouponController {
     public ResponseEntity<BaseResponseContent> claimCoupon(@RequestBody ClaimRequest claimRequest) {
 
         ClaimResponse claimResponse = claimCouponUseCase.execute(claimRequest);
-        BaseResponseContent responseContent = new BaseResponseContent(claimResponse);
-        if (claimResponse.getCode() != null) {
-            responseContent.setMessage("쿠폰 발급 성공하였습니다.");
-        }
 
-        return ResponseEntity.ok(responseContent);
+        return ResponseEntity.ok(new BaseResponseContent(claimResponse));
     }
 
     // 보유 쿠폰 조회
