@@ -10,14 +10,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
 
     // 주문 생성
+    @Transactional
     public Order createOrder(User user, List<OrderItem> orderItems, UserCoupon userCoupon) {
 
         // 전체 가격 계산 로직
@@ -52,6 +53,7 @@ public class OrderService {
     }
 
     // 주문 상태 업데이트
+    @Transactional
     public Order updateOrderStatus(Long id, String status) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ id.toString() }));

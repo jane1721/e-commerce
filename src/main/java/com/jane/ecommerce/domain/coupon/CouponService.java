@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CouponService {
@@ -18,6 +20,7 @@ public class CouponService {
     private final UserCouponRepository userCouponRepository;
 
     // 쿠폰 발급
+    @Transactional
     public UserCoupon claimCoupon(Long userId, Long couponId) {
 
         // 유저 조회

@@ -1,7 +1,5 @@
 package com.jane.ecommerce.application.order;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.coupon.CouponService;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.item.Item;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +26,7 @@ public class CreateOrderUseCase {
     private final ItemService itemService;
     private final CouponService couponService;
 
+    @Transactional
     public OrderCreateResponse execute(String userId, List<OrderItemDTO> orderItemDTOs, String userCouponId) {
 
         // userId 로 User 객체 조회

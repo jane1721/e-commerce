@@ -2,7 +2,6 @@ package com.jane.ecommerce.application.payment;
 
 import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.item.Item;
-import com.jane.ecommerce.domain.item.ItemService;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderService;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,9 +25,9 @@ public class PaymentUseCase {
     private final PaymentService paymentService;
     private final UserService userService; // 사용자 잔액 관련 서비스
     private final OrderService orderService; // 주문 관련 서비스
-    private final ItemService itemService; // 상품 재고 관련 서비스
     private final ExternalPlatformService externalPlatformService; // 외부 데이터 전송 서비스
 
+    @Transactional
     public PaymentCreateResponse processPayment(PaymentRequest paymentRequest) {
 
         // 사용자 잔액 조회
@@ -49,7 +49,7 @@ public class PaymentUseCase {
                 item.restoreStock(orderItem.getQuantity());  // 재고 복구
             }
 
-            // 주문 상태 취소 변경감
+            // 주문 상태 취소 변경
             orderService.updateOrderStatus(order.getId(), "CANCELLED");
 
             return new PaymentCreateResponse(null, "CANCELLED", LocalDateTime.now());
@@ -67,6 +67,7 @@ public class PaymentUseCase {
         return new PaymentCreateResponse(payment.getId(), payment.getStatus(), payment.getUpdatedAt());
     }
 
+    @Transactional(readOnly = true)
     public PaymentResponse getPaymentStatus(String paymentId) {
         // 결제 상태 조회
         Payment payment = paymentService.getPaymentStatus(Long.valueOf(paymentId));

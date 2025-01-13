@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -16,6 +17,7 @@ public class GetOrderUseCase {
 
     private final OrderService orderService;
 
+    @Transactional(readOnly = true)
     public OrderResponse execute(String id) {
         Order order = orderService.getOrderById(Long.valueOf(id));
 

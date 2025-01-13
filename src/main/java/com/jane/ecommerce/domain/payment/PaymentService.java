@@ -6,6 +6,7 @@ import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -15,6 +16,7 @@ public class PaymentService {
     private final OrderRepository orderRepository;
 
     // 결제 데이터 생성
+    @Transactional
     public Payment createPayment(Long orderId, String method) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(orderId) }));
