@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,6 +18,6 @@ public class OrderResponse {
     String id;
     String status;
     List<OrderItemDTO> orderItems;
-    int totalAmount;
+    BigDecimal totalAmount;
     LocalDateTime createAt;
 }

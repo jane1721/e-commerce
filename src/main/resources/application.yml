@@ -29,3 +29,8 @@ spring:
     url: jdbc:mysql://localhost:3306/ecommerce?characterEncoding=UTF-8&serverTimezone=UTC
     username: ecommerce
     password: ecommerce
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+    operations-sorter: method

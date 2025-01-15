@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class PaymentResponse {
-    String paymentId;
+    Long id;
     String status;
-    int amount;
+    BigDecimal amount;
     String method;
     LocalDateTime updatedAt;
 }

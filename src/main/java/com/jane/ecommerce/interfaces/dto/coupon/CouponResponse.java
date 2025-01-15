@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CouponResponse {
 
     String code;
-    int discountPercent;
+    Long discountPercent;
     LocalDateTime expiryDate;
     boolean isUsed;
 }

@@ -13,4 +13,5 @@ public class OrderCreateRequest {
 
     String userId;
     List<OrderItemDTO> orderItems;
+    String userCouponId;
 }

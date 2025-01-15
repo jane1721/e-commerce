@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PaymentRequest {
-
-    String id;
+    String userId;
+    String orderId;
     String method;
 }

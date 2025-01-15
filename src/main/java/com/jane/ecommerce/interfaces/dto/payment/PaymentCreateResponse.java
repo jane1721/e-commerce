@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PaymentCreateResponse {
 
-    String id;
+    Long id;
     String status;
     LocalDateTime createdAt;
 }
