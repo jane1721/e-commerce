@@ -41,7 +41,7 @@ public class CreateOrderUseCase {
                 item.decreaseStock(dto.getQuantity());
                 itemService.save(item); // 재고 업데이트
 
-                return new OrderItem(null, null, item, dto.getQuantity());
+                return OrderItem.create(item, dto.getQuantity());
             })
             .collect(Collectors.toList());
 

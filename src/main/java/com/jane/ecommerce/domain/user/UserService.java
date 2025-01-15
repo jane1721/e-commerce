@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -21,8 +23,8 @@ public class UserService {
     public ChargeResponse chargeBalance(ChargeRequest request) {
 
         // 유저 조회
-        User user = userRepository.findById(Long.parseLong(request.getUserId()))
-                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ request.getUserId() }));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(request.getUserId()) }));
 
         // 도메인 엔티티 메서드 호출
         user.chargeBalance(request.getAmount());
@@ -41,14 +43,14 @@ public class UserService {
     }
 
     // 유저 조회
-    public User getUserById(long userId) {
+    public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
     }
 
     // 잔액 차감
     @Transactional
-    public void deductUserBalance(Long userId, Long amount) {
+    public void deductUserBalance(Long userId, BigDecimal amount) {
 
         // 유저 조회
         User user = userRepository.findById(userId)

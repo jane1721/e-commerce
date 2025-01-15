@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "coupon")
 @Entity
 public class Coupon extends BaseEntity {
@@ -37,6 +35,23 @@ public class Coupon extends BaseEntity {
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCoupon> userCoupons;
+
+    private Coupon(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
+        this.id = id;
+        this.code = code;
+        this.discountPercent = discountPercent;
+        this.expiryDate = expiryDate;
+        this.quantity = quantity;
+        this.userCoupons = userCoupons;
+    }
+
+    public static Coupon create(String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
+        return new Coupon(null, code, discountPercent, expiryDate, quantity, userCoupons);
+    }
+
+    public static Coupon of(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
+        return new Coupon(id, code, discountPercent, expiryDate, quantity, userCoupons);
+    }
 
     // 쿠폰 발급
     public void claim() {

@@ -4,6 +4,8 @@ import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.user.User;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -22,22 +24,19 @@ public class OrderService {
     public Order createOrder(User user, List<OrderItem> orderItems, UserCoupon userCoupon) {
 
         // 전체 가격 계산 로직
-        double totalAmount = orderItems.stream()
-            .mapToDouble(orderItem -> orderItem.getItem().getPrice() * orderItem.getQuantity())
-            .sum();
+        BigDecimal totalAmount = orderItems.stream()
+                .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 쿠폰 적용하여 최종 가격 계산 로직
-        double finalAmount = totalAmount;
+        BigDecimal finalAmount = totalAmount;
         if (userCoupon != null && userCoupon.getCoupon() != null) {
-            double discountPercent = userCoupon.getCoupon().getDiscountPercent();
-            finalAmount = totalAmount * (1 - discountPercent / 100); // 할인 비율을 적용하여 최종 금액 계산
+            BigDecimal discountPercent = BigDecimal.valueOf(userCoupon.getCoupon().getDiscountPercent());
+            BigDecimal discountFactor = BigDecimal.ONE.subtract(discountPercent.divide(BigDecimal.valueOf(100)));
+            finalAmount = totalAmount.multiply(discountFactor); // 할인 비율을 적용하여 최종 금액 계산
         }
 
-        Order order = new Order();
-        order.setUser(user);
-        order.setTotalAmount((long) totalAmount);
-        order.setFinalAmount((long) finalAmount);
-        order.setStatus("PENDING"); // 주문 생성 시 PENDING 상태로 생성
+        Order order = Order.create(user, userCoupon, totalAmount, finalAmount, "PENDING"); // 주문 생성 시 PENDING 상태로 생성
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);

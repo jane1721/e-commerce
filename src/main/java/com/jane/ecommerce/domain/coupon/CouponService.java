@@ -37,10 +37,7 @@ public class CouponService {
         couponRepository.save(coupon);
 
         // 사용자에게 쿠폰 발급 기록 저장
-        UserCoupon userCoupon = new UserCoupon();
-        userCoupon.setCoupon(coupon);
-        userCoupon.setUser(user);  // User 엔티티는 존재한다고 가정
-        userCoupon.setIsUsed(false);
+        UserCoupon userCoupon = UserCoupon.create(user, coupon, false);
 
         return userCouponRepository.save(userCoupon);
     }

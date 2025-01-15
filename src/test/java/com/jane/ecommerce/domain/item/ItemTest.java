@@ -4,6 +4,8 @@ import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.exception.BaseCustomException;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -13,8 +15,7 @@ public class ItemTest {
     @Test
     void testDecreaseStock_Success() {
         // given
-        Item item = new Item();
-        item.setStock(10); // 초기 재고 10
+        Item item = Item.create("Item A", BigDecimal.ONE, 10); // 초기 재고 10
 
         // when
         item.decreaseStock(5); // 5 감소
@@ -26,9 +27,7 @@ public class ItemTest {
     @Test
     void decreaseStock_insufficientStock() {
         // given
-        Item item = new Item();
-        item.setId(1L);
-        item.setStock(3); // 초기 재고 3
+        Item item = Item.of(1L,"Item A", BigDecimal.ONE, 3); // 초기 재고 3
 
         // when & then
         BaseCustomException exception = assertThrows(
@@ -44,8 +43,7 @@ public class ItemTest {
     @Test
     void testRestoreStock_Success() {
         // given
-        Item item = new Item();
-        item.setStock(10); // 초기 재고 10
+        Item item = Item.create("Item A", BigDecimal.ONE, 10); // 초기 재고 10
 
         // when
         item.restoreStock(5); // 5 복구
@@ -58,8 +56,7 @@ public class ItemTest {
     @Test
     void restoreStock_negativeQuantity() {
         // given
-        Item item = new Item();
-        item.setStock(10); // 초기 재고 10
+        Item item = Item.create("Item A", BigDecimal.ONE, 10); // 초기 재고 10
 
         // when & then
         BaseCustomException exception = assertThrows(

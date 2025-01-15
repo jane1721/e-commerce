@@ -13,6 +13,8 @@ import com.jane.ecommerce.domain.coupon.Coupon;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.user.User;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,18 +37,13 @@ public class OrderServiceTest {
     @Test
     public void testCreateOrderWithCoupon_Success() {
         // given
-        Item item = new Item();
-        item.setPrice(100L); // 상품 가격 100
+        Item item = Item.create("Item A", BigDecimal.valueOf(100L), 2); // 상품 가격 100
 
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
-        orderItem.setQuantity(2); // 수량 2개
+        OrderItem orderItem = OrderItem.create(item, 2); // 수량 2개
 
-        Coupon coupon = new Coupon();
-        coupon.setDiscountPercent(20L); // 20% 할인
+        Coupon coupon = Coupon.create(null, 20L, null, 1, null);
 
-        UserCoupon userCoupon = new UserCoupon();
-        userCoupon.setCoupon(coupon);
+        UserCoupon userCoupon = UserCoupon.create(null, coupon, false);
 
         List<OrderItem> orderItems = List.of(orderItem);
 
@@ -64,9 +61,10 @@ public class OrderServiceTest {
 
         // then
         assertNotNull(createdOrder);
-        assertEquals(200L, createdOrder.getTotalAmount()); // 총 금액은 200
-        assertEquals(160L, createdOrder.getFinalAmount()); // 최종 금액은 160 (할인 적용)
+        assertEquals(0, createdOrder.getTotalAmount().compareTo(BigDecimal.valueOf(200L))); // 총 금액은 200
+        assertEquals(0, createdOrder.getFinalAmount().compareTo(BigDecimal.valueOf(160L))); // 최종 금액은 160 (할인 적용)
         assertEquals("PENDING", createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
+        assertEquals(orderItems, createdOrder.getOrderItems()); // 오더에 담긴 상품 목록
         verify(orderRepository, times(1)).save(any(Order.class)); // save 가 한 번 호출됐는지 확인
     }
 
@@ -74,18 +72,13 @@ public class OrderServiceTest {
     @Test
     public void testCreateOrderWithoutCoupon_Success() {
         // given
-        Item item = new Item();
-        item.setPrice(100L); // 상품 가격 100
+        Item item = Item.create("Item A", BigDecimal.valueOf(100L), 2); // 상품 가격 100
 
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
-        orderItem.setQuantity(2); // 수량 2개
+        OrderItem orderItem = OrderItem.create(item, 2); // 수량 2개
 
-        Coupon coupon = new Coupon();
-        coupon.setDiscountPercent(20L); // 20% 할인
+        Coupon coupon = Coupon.create(null, 20L, null, 0, null); // 20% 할인
 
-        UserCoupon userCoupon = new UserCoupon();
-        userCoupon.setCoupon(coupon);
+        UserCoupon userCoupon = UserCoupon.create(null, coupon, false);
 
         List<OrderItem> orderItems = List.of(orderItem);
 
@@ -103,8 +96,8 @@ public class OrderServiceTest {
 
         // then
         assertNotNull(createdOrder);
-        assertEquals(200L, createdOrder.getTotalAmount()); // 총 금액은 200
-        assertEquals(200L, createdOrder.getFinalAmount()); // 최종 금액은 200 (할인 없음)
+        assertEquals(BigDecimal.valueOf(200L), createdOrder.getTotalAmount()); // 총 금액은 200
+        assertEquals(BigDecimal.valueOf(200L), createdOrder.getFinalAmount()); // 최종 금액은 200 (할인 없음)
         assertEquals("PENDING", createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
         verify(orderRepository, times(1)).save(any(Order.class)); // save 가 한 번 호출됐는지 확인
     }
@@ -114,9 +107,8 @@ public class OrderServiceTest {
     public void testGetOrderById_Success() {
         // given
         Long orderId = 1L;
-        Order mockOrder = new Order();
-        mockOrder.setId(orderId);
-        mockOrder.setStatus("CONFIRMED");
+        Order mockOrder = Order.of(orderId, null, null, null, "CONFIRMED");
+
         // 다른 속성들 설정
         when(orderRepository.findByIdWithOrderItems(orderId)).thenReturn(Optional.of(mockOrder));
 
@@ -154,9 +146,7 @@ public class OrderServiceTest {
         String newStatus = "CONFIRMED";
 
         // 주문 mock 객체 생성
-        Order order = new Order();
-        order.setId(orderId);
-        order.setStatus("PENDING");
+        Order order = Order.of(orderId, null, null, null, "PENDING");
 
         // repository 가 반환할 mockOrder 설정
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));

@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "cart_item")
 @Entity
 public class CartItem {

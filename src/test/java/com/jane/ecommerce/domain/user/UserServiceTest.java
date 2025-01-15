@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,15 +36,15 @@ public class UserServiceTest {
         user.setId(1L);
         user.setUsername("jane");
         user.setPassword("password");
-        user.setBalance(1000L); // 초기 잔액
+        user.setBalance(BigDecimal.valueOf(1000L)); // 초기 잔액
     }
 
     // 잔액 충전 성공
     @Test
     void testChargeBalance_Success() {
         // given
-        long chargeAmount = 500L;
-        ChargeRequest request = new ChargeRequest(String.valueOf(user.getId()), chargeAmount);
+        BigDecimal chargeAmount = BigDecimal.valueOf(500L);
+        ChargeRequest request = new ChargeRequest(user.getId(), chargeAmount);
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -51,7 +52,7 @@ public class UserServiceTest {
         ChargeResponse response = userService.chargeBalance(request);
 
         // test
-        assertEquals(1500L, response.getCurrentBalance()); // 충전 후 잔액 확인
+        assertEquals(0, response.getCurrentBalance().compareTo(BigDecimal.valueOf(1500L))); // 충전 후 잔액 확인
         verify(userRepository).save(user); // 저장 메서드 호출 확인
     }
 
@@ -59,8 +60,8 @@ public class UserServiceTest {
     @Test
     void testChargeBalance_InvalidAmount() {
         // given
-        long invalidAmount = -500L;
-        ChargeRequest request = new ChargeRequest(String.valueOf(user.getId()), invalidAmount);
+        BigDecimal invalidAmount = BigDecimal.valueOf(-500L);
+        ChargeRequest request = new ChargeRequest(user.getId(), invalidAmount);
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -77,8 +78,8 @@ public class UserServiceTest {
     @Test
     void testChargeBalance_UserNotFound() {
         // given
-        long chargeAmount = 500L;
-        ChargeRequest request = new ChargeRequest("999999", chargeAmount); // 존재하지 않는 사용자 ID
+        BigDecimal chargeAmount = BigDecimal.valueOf(500L);
+        ChargeRequest request = new ChargeRequest(999999L, chargeAmount); // 존재하지 않는 사용자 ID
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -104,7 +105,7 @@ public class UserServiceTest {
         // then
         assertNotNull(response);
         assertEquals(1L, response.getUserId());
-        assertEquals(1000L, response.getBalance());
+        assertEquals(0, response.getBalance().compareTo(BigDecimal.valueOf(1000L))); // 잔액 확인
     }
 
     // 존재하지 않는 유저 잔액 조회 실패
@@ -158,14 +159,14 @@ public class UserServiceTest {
     @Test
     void testDeductUserBalance_Success() {
         // given
-        long deductAmount = 500L;
+        BigDecimal deductAmount = BigDecimal.valueOf(500L);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // when
         userService.deductUserBalance(user.getId(), deductAmount);
 
         // then
-        assertEquals(500L, user.getBalance()); // 차감 후 잔액 확인
+        assertEquals(deductAmount, user.getBalance()); // 차감 후 잔액 확인
         verify(userRepository).save(user); // 저장 메서드 호출 확인
     }
 
@@ -173,7 +174,7 @@ public class UserServiceTest {
     @Test
     void testDeductUserBalance_InsufficientBalance() {
         // given
-        long deductAmount = 1500L; // 잔액보다 많은 금액 차감 요청
+        BigDecimal deductAmount = BigDecimal.valueOf(1500L); // 잔액보다 많은 금액 차감 요청
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // when & then
@@ -182,7 +183,7 @@ public class UserServiceTest {
         });
 
         assertEquals(BaseErrorCode.INSUFFICIENT_BALANCE, exception.getBaseErrorCode()); // 예외 코드 확인
-        assertEquals(1000L, user.getBalance()); // 잔액이 변경되지 않았음을 확인
+        assertEquals(BigDecimal.valueOf(1000L), user.getBalance()); // 잔액이 변경되지 않았음을 확인
         verify(userRepository, never()).save(user); // 저장 메서드가 호출되지 않았음을 확인
     }
 
@@ -190,7 +191,7 @@ public class UserServiceTest {
     @Test
     void testDeductUserBalance_UserNotFound() {
         // given
-        long deductAmount = 500L;
+        BigDecimal deductAmount = BigDecimal.valueOf(500L);
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then

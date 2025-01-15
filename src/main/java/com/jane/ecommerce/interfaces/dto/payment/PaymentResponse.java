@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class PaymentResponse {
     Long id;
     String status;
-    Long amount;
+    BigDecimal amount;
     String method;
     LocalDateTime updatedAt;
 }

@@ -1,19 +1,13 @@
 package com.jane.ecommerce.domain.order;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.item.Item;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "order_item")
 @Entity
 public class OrderItem extends BaseEntity {
@@ -31,4 +25,23 @@ public class OrderItem extends BaseEntity {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    private OrderItem(Long id, Order order, Item item, Integer quantity) {
+        this.id = id;
+        this.order = order;
+        this.item = item;
+        this.quantity = quantity;
+    }
+
+    public static OrderItem create(Item item, Integer quantity) {
+        return new OrderItem(null, null, item, quantity);
+    }
+
+    public static OrderItem of(Long id, Order order, Item item, Integer quantity) {
+        return new OrderItem(id, order, item, quantity);
+    }
 }

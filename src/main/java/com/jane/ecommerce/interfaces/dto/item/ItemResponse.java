@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class ItemResponse {
 
     String itemId;
     String name;
-    Long price;
+    BigDecimal price;
     int stock;
 
     public static ItemResponse from(Item item) {

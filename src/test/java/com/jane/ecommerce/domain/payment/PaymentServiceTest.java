@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,9 +36,7 @@ public class PaymentServiceTest {
         Long orderId = 1L;
         String method = "CREDIT_CARD";
 
-        Order mockOrder = new Order();
-        mockOrder.setId(orderId);
-        mockOrder.setTotalAmount(1000L);
+        Order mockOrder = Order.of(orderId, null, BigDecimal.valueOf(1000L), BigDecimal.ZERO, null);
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -48,7 +47,7 @@ public class PaymentServiceTest {
         // then
         assertNotNull(payment);
         assertEquals(mockOrder, payment.getOrder());
-        assertEquals(1000L, payment.getAmount());
+        assertEquals(BigDecimal.valueOf(1000), payment.getAmount());
         assertEquals(method, payment.getMethod());
         assertEquals("INITIATED", payment.getStatus());
         verify(orderRepository, times(1)).findById(orderId);
@@ -80,9 +79,7 @@ public class PaymentServiceTest {
         // given
         Long paymentId = 1L;
 
-        Payment mockPayment = new Payment();
-        mockPayment.setId(paymentId);
-        mockPayment.setStatus("CONFIRMED");
+        Payment mockPayment = Payment.of(paymentId, null, BigDecimal.ZERO, null, "CONFIRMED");
 
         when(paymentRepository.findById(paymentId)).thenReturn(Optional.of(mockPayment));
 

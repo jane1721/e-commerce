@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,8 @@ import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,40 +34,14 @@ import org.springframework.data.domain.Pageable;
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
-    private ItemService itemService;
+    @Mock
     private ItemRepository itemRepository;
+
+    @Mock
     private OrderRepository orderRepository;
 
-    private List<Order> orders;  // 주문 목록 준비
-    private Item itemA;
-    private Item itemB;
-
-    @BeforeEach
-    void setUp() {
-        // Mockito.mock() 메서드를 직접 호출하여 Mock 객체 생성
-        itemRepository = mock(ItemRepository.class);
-        orderRepository = mock(OrderRepository.class);
-        itemService = new ItemService(itemRepository, orderRepository); // 의존성 직접 주입
-
-        // 샘플 상품 데이터 생성
-        itemA = new Item(1L, "Product A", 1000L, 100, new ArrayList<>(), new ArrayList<>());
-        itemB = new Item(2L, "Product B", 1500L, 200, new ArrayList<>(), new ArrayList<>());
-
-        // 샘플 주문 데이터 생성
-        OrderItem orderItemA = new OrderItem(1L, null, itemA, 10);
-        OrderItem orderItemB = new OrderItem(2L, null, itemB, 5);
-        Order order = new Order(1L, null, null, 10000L, 9500L, "COMPLETED", new ArrayList<>(), null);
-        order.addOrderItem(orderItemA);
-        order.addOrderItem(orderItemB);
-
-        orders = new ArrayList<>();
-        orders.add(order);
-
-        // Repository 모킹
-        when(orderRepository.findOrdersByCreatedAtAfter(any(LocalDateTime.class))).thenReturn(orders);
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(itemA));
-        when(itemRepository.findById(2L)).thenReturn(Optional.of(itemB));
-    }
+    @InjectMocks
+    private ItemService itemService;
 
     // 상품 목록 페이징 조회 성공
     @Test
@@ -72,9 +49,9 @@ public class ItemServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 2);
         List<Item> allItems = Arrays.asList(
-            new Item(1L, "Test Item 1", 1000L, 10, null, null),
-            new Item(2L, "Test Item 2", 2000L, 20, null, null),
-            new Item(3L, "Test Item 3", 3000L, 30, null, null)
+            Item.of(1L, "Test Item 1", BigDecimal.valueOf(1000L), 10),
+            Item.of(2L, "Test Item 2", BigDecimal.valueOf(2000L), 20),
+            Item.of(3L, "Test Item 3", BigDecimal.valueOf(3000L), 30)
         );
         // 페이지 크기만큼 제한된 데이터로 생성
         List<Item> pagedItems = allItems.subList(0, 2); // 첫 페이지 데이터
@@ -99,7 +76,7 @@ public class ItemServiceTest {
     public void testGetItemById_Success() {
         // given
         Long itemId = 1L;
-        Item item = new Item(1L, "Test Item 1", 1000L, 10, null, null);
+        Item item = Item.of(1L, "Test Item 1", BigDecimal.valueOf(1000L), 10);
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
 
         // when
@@ -130,9 +107,32 @@ public class ItemServiceTest {
 
     @Test
     public void testGetTopItems() {
+        // given
+        // 샘플 상품 데이터 생성
+        Item itemA = Item.of(1L, "Product A", BigDecimal.valueOf(1000L), 100);
+        Item itemB = Item.of(2L, "Product B", BigDecimal.valueOf(1500L), 200);
+
+        // 샘플 주문 데이터 생성
+        OrderItem orderItemA = OrderItem.of(1L, null, itemA, 10);
+        OrderItem orderItemB = OrderItem.of(2L, null, itemB, 5);
+        Order order = Order.of(1L, null, BigDecimal.valueOf(10000L), BigDecimal.valueOf(9500L), "COMPLETED");
+        order.addOrderItem(orderItemA);
+        order.addOrderItem(orderItemB);
+
+        // 주문 목록 준비
+        List<Order> orders = new ArrayList<>();
+        orders.add(order);
+
+        // Repository 모킹
+        when(orderRepository.findOrdersByCreatedAtAfter(any(LocalDateTime.class))).thenReturn(orders);
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(itemA));
+        when(itemRepository.findById(2L)).thenReturn(Optional.of(itemB));
+
+        // when
         // 실제 서비스 메서드 호출
         List<TopItemResponse> topItems = itemService.getTopItems();
 
+        // then
         // 반환된 결과 검증
         assertEquals(2, topItems.size());  // 반환되는 상품의 개수는 2개
         assertEquals("Product A", topItems.get(0).getName());  // 상위 1위 상품은 "Product A"

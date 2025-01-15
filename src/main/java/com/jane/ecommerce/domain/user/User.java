@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -33,7 +34,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(nullable = false)
-    private Long balance;
+    private BigDecimal balance;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
@@ -45,18 +46,18 @@ public class User extends BaseEntity {
     private List<UserCoupon> userCoupons;
 
     // 잔액 충전 메서드
-    public void chargeBalance(Long amount) {
-        if (amount <= 0) {
+    public void chargeBalance(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BaseCustomException(BaseErrorCode.INVALID_PARAMETER, new String[]{ String.valueOf(amount) });
         }
-        this.balance += amount;
+        this.balance = this.balance.add(amount);
     }
 
     // 잔액 차감 메서드
-    public void deductBalance(Long amount) {
-        if (this.balance < amount) {
+    public void deductBalance(BigDecimal amount) {
+        if (this.balance.compareTo(amount) < 0) {
             throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_BALANCE, new String[]{ String.valueOf(this.id) });
         }
-        this.balance -= amount;
+        this.balance = this.balance.subtract(amount);
     }
 }

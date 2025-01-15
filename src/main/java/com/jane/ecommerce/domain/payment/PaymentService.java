@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @RequiredArgsConstructor
 @Service
 public class PaymentService {
@@ -21,13 +23,11 @@ public class PaymentService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(orderId) }));
 
-        Long amount = order.getTotalAmount();
+        BigDecimal amount = order.getTotalAmount();
 
-        Payment payment = new Payment(null, order, amount, method, "INITIATED");
+        Payment payment = Payment.of(null, order, amount, method, "INITIATED");
 
-        paymentRepository.save(payment);
-
-        return payment;
+        return paymentRepository.save(payment);
     }
 
     // 결제 상태 조회

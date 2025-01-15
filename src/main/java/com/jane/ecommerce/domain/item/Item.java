@@ -1,6 +1,5 @@
 package com.jane.ecommerce.domain.item;
 
-
 import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.entity.BaseEntity;
 import com.jane.ecommerce.base.exception.BaseCustomException;
@@ -12,12 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "item")
 @Entity
 public class Item extends BaseEntity {
@@ -29,16 +28,33 @@ public class Item extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private Long price;
+    private BigDecimal price;
 
     @Column(nullable = false)
     private Integer stock;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    private Item(Long id, String name, BigDecimal price, Integer stock) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.orderItems = new ArrayList<>();
+        this.cartItems = new ArrayList<>();
+    }
+
+    public static Item create(String name, BigDecimal price, Integer stock) {
+        return new Item(null, name, price, stock);
+    }
+
+    public static Item of(Long id, String name, BigDecimal price, Integer stock) {
+        return new Item(id, name, price, stock);
+    }
 
     // 재고 차감
     public void decreaseStock(int quantity) {

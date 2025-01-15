@@ -40,9 +40,7 @@ public class CouponServiceTest {
         User user = new User();
         user.setId(userId);
 
-        Coupon coupon = new Coupon();
-        coupon.setId(couponId);
-        coupon.setQuantity(10);
+        Coupon coupon = Coupon.of(couponId, null, null, null, 10, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
@@ -107,9 +105,7 @@ public class CouponServiceTest {
         User user = new User();
         user.setId(userId);
 
-        Coupon coupon = new Coupon();
-        coupon.setId(couponId);
-        coupon.setQuantity(0);
+        Coupon coupon = Coupon.of(couponId, null, null, null, 0, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
