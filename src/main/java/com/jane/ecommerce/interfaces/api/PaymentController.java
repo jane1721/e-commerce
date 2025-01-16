@@ -1,7 +1,7 @@
 package com.jane.ecommerce.interfaces.api;
 
 import com.jane.ecommerce.application.payment.PaymentUseCase;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentCreateResponse;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentRequest;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentResponse;

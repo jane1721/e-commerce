@@ -1,7 +1,7 @@
 package com.jane.ecommerce.application.payment;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderClient;
@@ -44,7 +44,7 @@ public class PaymentUseCase {
             // 잔액 차감
             userService.deductUserBalance(user.getId(), finalAmount);
 
-        } catch (BaseCustomException e) {
+        } catch (CustomException e) {
 
             // 주문에 포함된 모든 상품의 재고 복구
             for (OrderItem orderItem : order.getOrderItems()) {
@@ -68,7 +68,7 @@ public class PaymentUseCase {
         boolean isSend = orderClient.send(order);
 
         if (!isSend) {
-            throw new BaseCustomException(BaseErrorCode.CONFLICT);
+            throw new CustomException(ErrorCode.CONFLICT);
         }
 
         return new PaymentCreateResponse(payment.getId(), payment.getStatus(), payment.getUpdatedAt());

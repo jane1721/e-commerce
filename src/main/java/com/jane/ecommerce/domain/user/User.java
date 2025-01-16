@@ -1,8 +1,8 @@
 package com.jane.ecommerce.domain.user;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.BaseEntity;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.order.Order;
@@ -48,7 +48,7 @@ public class User extends BaseEntity {
     // 잔액 충전 메서드
     public void chargeBalance(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BaseCustomException(BaseErrorCode.INVALID_PARAMETER, new String[]{ String.valueOf(amount) });
+            throw new CustomException(ErrorCode.INVALID_PARAMETER, new String[]{ String.valueOf(amount) });
         }
         this.balance = this.balance.add(amount);
     }
@@ -56,7 +56,7 @@ public class User extends BaseEntity {
     // 잔액 차감 메서드
     public void deductBalance(BigDecimal amount) {
         if (this.balance.compareTo(amount) < 0) {
-            throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_BALANCE, new String[]{ String.valueOf(this.id) });
+            throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE, new String[]{ String.valueOf(this.id) });
         }
         this.balance = this.balance.subtract(amount);
     }

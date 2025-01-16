@@ -14,13 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderRepository;
 import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -97,12 +96,12 @@ public class ItemServiceTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.empty());
 
         // when
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             itemService.getItemById(itemId);
         });
 
         // then
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }
 
     @Test

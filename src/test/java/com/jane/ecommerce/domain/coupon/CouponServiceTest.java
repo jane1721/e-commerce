@@ -1,8 +1,7 @@
 package com.jane.ecommerce.domain.coupon;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
-import com.jane.ecommerce.domain.item.Item;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.user.User;
 import com.jane.ecommerce.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -66,10 +65,10 @@ public class CouponServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // when
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> couponService.claimCoupon(userId, couponId));
+        CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
 
         // then
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(userRepository).findById(userId);
         verifyNoInteractions(couponRepository, userCouponRepository);
     }
@@ -87,10 +86,10 @@ public class CouponServiceTest {
         when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
 
         // when
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> couponService.claimCoupon(userId, couponId));
+        CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
 
         // then
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(userRepository).findById(userId);
         verify(couponRepository).findById(couponId);
         verifyNoInteractions(userCouponRepository);
@@ -111,10 +110,10 @@ public class CouponServiceTest {
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
         // when
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> couponService.claimCoupon(userId, couponId));
+        CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
 
         // then
-        assertEquals(BaseErrorCode.CONFLICT, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
         verify(userRepository).findById(userId);
         verify(couponRepository).findById(couponId);
         verifyNoInteractions(userCouponRepository);
@@ -163,10 +162,10 @@ public class CouponServiceTest {
         when(userCouponRepository.findById(userCouponId)).thenReturn(Optional.empty());
 
         // when, then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             couponService.getUserCouponById(userCouponId);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }
 }

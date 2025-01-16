@@ -1,6 +1,6 @@
 package com.jane.ecommerce.domain.order;
 
-import com.jane.ecommerce.base.entity.BaseEntity;
+import com.jane.ecommerce.domain.BaseEntity;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.payment.Payment;
 import com.jane.ecommerce.domain.user.User;

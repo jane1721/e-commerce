@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderRepository;
 import org.junit.jupiter.api.Test;
@@ -64,11 +64,11 @@ public class PaymentServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             paymentService.createPayment(orderId, method);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(orderRepository, times(1)).findById(orderId);
         verify(paymentRepository, never()).save(any(Payment.class));
     }
@@ -102,11 +102,11 @@ public class PaymentServiceTest {
         when(paymentRepository.findById(paymentId)).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             paymentService.getPaymentStatus(paymentId);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(paymentRepository, times(1)).findById(paymentId);
     }
 }

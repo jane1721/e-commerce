@@ -1,7 +1,7 @@
 package com.jane.ecommerce.domain.coupon;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,9 +27,9 @@ public class CouponTest {
         Coupon coupon = Coupon.create(null, null, null, 0, null); // 쿠폰 수량 0으로 설정
 
         // When & Then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, coupon::claim);
+        CustomException exception = assertThrows(CustomException.class, coupon::claim);
 
         // 예외 코드 확인
-        assertEquals(BaseErrorCode.CONFLICT, exception.getBaseErrorCode(), "예외 코드가 일치해야 합니다.");
+        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode(), "예외 코드가 일치해야 합니다.");
     }
 }

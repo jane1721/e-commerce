@@ -1,13 +1,11 @@
 package com.jane.ecommerce.domain.coupon;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.BaseEntity;
+import com.jane.ecommerce.domain.error.CustomException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,7 +54,7 @@ public class Coupon extends BaseEntity {
     // 쿠폰 발급
     public void claim() {
         if (this.quantity <= 0) {
-            throw new BaseCustomException(BaseErrorCode.CONFLICT);
+            throw new CustomException(ErrorCode.CONFLICT);
         }
 
         // 쿠폰 수량 감소

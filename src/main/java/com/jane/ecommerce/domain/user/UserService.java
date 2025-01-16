@@ -1,7 +1,7 @@
 package com.jane.ecommerce.domain.user;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
@@ -24,7 +24,7 @@ public class UserService {
 
         // 유저 조회
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(request.getUserId()) }));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(request.getUserId()) }));
 
         // 도메인 엔티티 메서드 호출
         user.chargeBalance(request.getAmount());
@@ -37,7 +37,7 @@ public class UserService {
     // 잔액 조회
     public BalanceResponse getBalance(String userId) {
         User user = userRepository.findById(Long.parseLong(userId))
-                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ userId }));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ userId }));
 
         return new BalanceResponse(user.getId(), user.getBalance());
     }
@@ -45,7 +45,7 @@ public class UserService {
     // 유저 조회
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
     }
 
     // 잔액 차감
@@ -54,7 +54,7 @@ public class UserService {
 
         // 유저 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseCustomException(BaseErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
 
         // 도메인 엔티티 메서드 호출
         user.deductBalance(amount);

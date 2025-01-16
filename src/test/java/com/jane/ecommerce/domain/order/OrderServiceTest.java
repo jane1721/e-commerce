@@ -7,8 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.coupon.Coupon;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.item.Item;
@@ -130,11 +130,11 @@ public class OrderServiceTest {
         when(orderRepository.findByIdWithOrderItems(orderId)).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             orderService.getOrderById(orderId);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(orderRepository, times(1)).findByIdWithOrderItems(orderId);  // 메서드 호출 횟수 확인
     }
 
@@ -173,10 +173,10 @@ public class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         // when, then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             orderService.updateOrderStatus(orderId, newStatus);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }
 }

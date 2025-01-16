@@ -1,6 +1,6 @@
 package com.jane.ecommerce.interfaces.api;
 
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.domain.user.UserService;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;

@@ -3,7 +3,7 @@ package com.jane.ecommerce.interfaces.api;
 import com.jane.ecommerce.application.order.CreateOrderUseCase;
 import com.jane.ecommerce.application.order.GetOrderUseCase;
 import com.jane.ecommerce.application.order.UpdateOrderStatusUseCase;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.order.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

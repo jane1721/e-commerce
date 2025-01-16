@@ -1,15 +1,13 @@
 package com.jane.ecommerce.domain.item;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.BaseEntity;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.order.OrderItem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -60,7 +58,7 @@ public class Item extends BaseEntity {
     public void decreaseStock(int quantity) {
         // 재고가 부족한 경우 예외 발생
         if (this.stock < quantity) {
-            throw new BaseCustomException(BaseErrorCode.INSUFFICIENT_STOCK, new String[]{ this.id.toString() });
+            throw new CustomException(ErrorCode.INSUFFICIENT_STOCK, new String[]{ this.id.toString() });
         }
         this.stock -= quantity;
     }
@@ -69,7 +67,7 @@ public class Item extends BaseEntity {
     public void restoreStock(int quantity) {
         // 음수로 재고 복구 시도할 경우 예외 발생
         if (quantity < 0) {
-            throw new BaseCustomException(BaseErrorCode.INVALID_PARAMETER);
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
         }
 
         this.stock += quantity;  // 주문이 취소될 때, 차감된 수량만큼 복구
