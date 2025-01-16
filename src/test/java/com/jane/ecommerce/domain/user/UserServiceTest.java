@@ -32,11 +32,7 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         // 기본 유저 생성
-        user = new User();
-        user.setId(1L);
-        user.setUsername("jane");
-        user.setPassword("password");
-        user.setBalance(BigDecimal.valueOf(1000L)); // 초기 잔액
+        user = User.of(1L, "jane", "password", BigDecimal.valueOf(1000L)); // 초기 잔액
     }
 
     // 잔액 충전 성공
@@ -201,5 +197,17 @@ public class UserServiceTest {
 
         assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
         verify(userRepository, never()).save(any(User.class)); // 저장 메서드가 호출되지 않았음을 확인
+    }
+
+    // 유저 존재 여부 확인 성공
+    @Test
+    void testIsUserExists_Success() {
+        // given
+        when(userRepository.findByUsername("jane")).thenReturn(Optional.of(User.create("jane", null, null)));
+        when(userRepository.findByUsername("nonUser")).thenReturn(Optional.empty());
+
+        // when & then
+        assertTrue(userService.isUserExists("jane"));
+        assertFalse(userService.isUserExists("nonUser"));
     }
 }

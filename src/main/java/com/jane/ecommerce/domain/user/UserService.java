@@ -61,4 +61,9 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    // 유저 존재 여부 확인
+    public boolean isUserExists(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
 }

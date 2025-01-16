@@ -36,8 +36,7 @@ public class CouponServiceTest {
         Long userId = 1L;
         Long couponId = 1L;
 
-        User user = new User();
-        user.setId(userId);
+        User user = User.of(userId, null, null, null);
 
         Coupon coupon = Coupon.of(couponId, null, null, null, 10, null);
 
@@ -79,8 +78,7 @@ public class CouponServiceTest {
         Long userId = 1L;
         Long couponId = 1L;
 
-        User user = new User();
-        user.setId(userId);
+        User user = User.of(userId, null, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
@@ -101,8 +99,7 @@ public class CouponServiceTest {
         Long userId = 1L;
         Long couponId = 1L;
 
-        User user = new User();
-        user.setId(userId);
+        User user = User.of(userId, null, null, null);
 
         Coupon coupon = Coupon.of(couponId, null, null, null, 0, null);
 

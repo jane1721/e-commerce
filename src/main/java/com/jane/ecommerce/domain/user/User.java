@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "user_account")
 @Entity
 public class User extends BaseEntity {
@@ -44,6 +43,23 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCoupon> userCoupons;
+
+    private User(Long id, String username, String password, BigDecimal balance) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.balance = balance;
+        this.orders = new ArrayList<>();
+        this.userCoupons = new ArrayList<>();
+    }
+
+    public static User create(String username, String password, BigDecimal balance) {
+        return new User(null, username, password, balance);
+    }
+
+    public static User of(Long id, String username, String password, BigDecimal balance) {
+        return new User(id, username, password, balance);
+    }
 
     // 잔액 충전 메서드
     public void chargeBalance(BigDecimal amount) {

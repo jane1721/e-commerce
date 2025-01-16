@@ -47,8 +47,7 @@ public class OrderServiceTest {
 
         List<OrderItem> orderItems = List.of(orderItem);
 
-        User user = new User();
-        user.setId(1L);
+        User user = User.of(1L, null, null, null);
 
         // 전체 금액 100 * 2 = 200
         // 최종 금액은 20% 할인된 금액 200 * 0.8 = 160
@@ -82,8 +81,7 @@ public class OrderServiceTest {
 
         List<OrderItem> orderItems = List.of(orderItem);
 
-        User user = new User();
-        user.setId(1L);
+        User user = User.of(1L, null, null, null);
 
         // 전체 금액 100 * 2 = 200
         // 쿠폰이 없으므로 최종 금액은 전체 금액과 동일
