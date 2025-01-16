@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class PaymentUseCase {
     public PaymentCreateResponse processPayment(PaymentRequest paymentRequest) {
 
         // 사용자 잔액 조회
-        User user = userService.getUserById(Long.parseLong(paymentRequest.getUserId()));
+        User user = userService.getUserByIdWithLock(Long.parseLong(paymentRequest.getUserId()));
 
         // 주문 및 금액 확인
         Order order = orderService.getOrderById(Long.parseLong(paymentRequest.getOrderId()));

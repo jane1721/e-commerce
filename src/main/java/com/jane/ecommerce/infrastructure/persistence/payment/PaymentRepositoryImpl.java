@@ -5,6 +5,7 @@ import com.jane.ecommerce.domain.payment.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -21,5 +22,15 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public Optional<Payment> findById(Long id) {
         return paymentJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<Payment> findAll() {
+        return paymentJpaRepository.findAll();
+    }
+
+    @Override
+    public Optional<Payment> findByOrderId(Long orderId) {
+        return paymentJpaRepository.findByOrderId(orderId);
     }
 }

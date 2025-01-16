@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,13 @@ public class PaymentService {
     // 결제 데이터 생성
     @Transactional
     public Payment createPayment(Long orderId, String method) {
+
+        // 결제한 주문이 이미 처리되었는지 확인
+        Optional<Payment> existingPayment = paymentRepository.findByOrderId(orderId);
+        if (existingPayment.isPresent()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(orderId) }));
 

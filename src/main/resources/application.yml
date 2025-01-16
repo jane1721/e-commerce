@@ -2,7 +2,7 @@ spring:
   application:
     name: e-commerce
   profiles:
-    active: local
+    active: test
   datasource:
     name: ecommerce
     type: com.zaxxer.hikari.HikariDataSource
