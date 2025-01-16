@@ -22,7 +22,7 @@ spring:
       hibernate.jdbc.time_zone: UTC
 
 ---
-spring.config.activate.on-profile: local, test
+spring.config.activate.on-profile: local
 
 spring:
   datasource:
@@ -34,3 +34,11 @@ springdoc:
   swagger-ui:
     display-request-duration: true
     operations-sorter: method
+
+---
+spring.config.activate.on-profile: test
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update

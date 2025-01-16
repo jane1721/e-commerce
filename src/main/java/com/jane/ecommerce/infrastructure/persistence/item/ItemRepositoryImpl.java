@@ -28,4 +28,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Item save(Item item) {
         return itemJpaRepository.save(item);
     }
+
+    @Override
+    public Optional<Item> findByIdWithPessimisticLock(Long itemId) {
+        return itemJpaRepository.findByIdWithPessimisticLock(itemId);
+    }
 }

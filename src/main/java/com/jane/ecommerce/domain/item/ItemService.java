@@ -37,6 +37,11 @@ public class ItemService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(itemId) }));
     }
 
+    public Item getItemByIdWithLock(Long itemId) {
+        return itemRepository.findByIdWithPessimisticLock(itemId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(itemId) }));
+    }
+
     @Transactional
     public Item save(Item item) {
         return itemRepository.save(item);
