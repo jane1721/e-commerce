@@ -15,6 +15,7 @@ import com.jane.ecommerce.interfaces.dto.payment.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class PaymentUseCase {
 
         // 주문 및 금액 확인
         Order order = orderService.getOrderById(Long.parseLong(paymentRequest.getOrderId()));
-        Long finalAmount = order.getFinalAmount();
+        BigDecimal finalAmount = order.getFinalAmount();
 
         try {
             // 잔액 차감
