@@ -38,7 +38,7 @@ public class CouponServiceTest {
 
         User user = User.of(userId, null, null, null);
 
-        Coupon coupon = Coupon.of(couponId, null, null, null, 10, null);
+        Coupon coupon = Coupon.of(couponId, null, null, null, 10);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
@@ -101,7 +101,7 @@ public class CouponServiceTest {
 
         User user = User.of(userId, null, null, null);
 
-        Coupon coupon = Coupon.of(couponId, null, null, null, 0, null);
+        Coupon coupon = Coupon.of(couponId, null, null, null, 0);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));

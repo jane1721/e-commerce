@@ -41,7 +41,7 @@ public class OrderServiceTest {
 
         OrderItem orderItem = OrderItem.create(item, 2); // 수량 2개
 
-        Coupon coupon = Coupon.create(null, 20L, null, 1, null);
+        Coupon coupon = Coupon.create(null, 20L, null, 1);
 
         UserCoupon userCoupon = UserCoupon.create(null, coupon, false);
 
@@ -75,7 +75,7 @@ public class OrderServiceTest {
 
         OrderItem orderItem = OrderItem.create(item, 2); // 수량 2개
 
-        Coupon coupon = Coupon.create(null, 20L, null, 0, null); // 20% 할인
+        Coupon coupon = Coupon.create(null, 20L, null, 0); // 20% 할인
 
         UserCoupon userCoupon = UserCoupon.create(null, coupon, false);
 

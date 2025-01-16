@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,21 +35,21 @@ public class Coupon extends BaseEntity {
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCoupon> userCoupons;
 
-    private Coupon(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
+    private Coupon(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
         this.id = id;
         this.code = code;
         this.discountPercent = discountPercent;
         this.expiryDate = expiryDate;
         this.quantity = quantity;
-        this.userCoupons = userCoupons;
+        this.userCoupons = new ArrayList<>();
     }
 
-    public static Coupon create(String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
-        return new Coupon(null, code, discountPercent, expiryDate, quantity, userCoupons);
+    public static Coupon create(String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
+        return new Coupon(null, code, discountPercent, expiryDate, quantity);
     }
 
-    public static Coupon of(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
-        return new Coupon(id, code, discountPercent, expiryDate, quantity, userCoupons);
+    public static Coupon of(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
+        return new Coupon(id, code, discountPercent, expiryDate, quantity);
     }
 
     // 쿠폰 발급

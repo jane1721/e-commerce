@@ -12,7 +12,7 @@ public class CouponTest {
     @Test
     void testClaimCoupon_Success() {
         // Given
-        Coupon coupon = Coupon.create(null, null, null, 5, null); // 쿠폰 수량 5로 설정
+        Coupon coupon = Coupon.create(null, null, null, 5); // 쿠폰 수량 5로 설정
 
         // When
         coupon.claim(); // claim 메서드 호출
@@ -24,7 +24,7 @@ public class CouponTest {
     @Test
     void testClaimCoupon_QuantityZero() {
         // Given
-        Coupon coupon = Coupon.create(null, null, null, 0, null); // 쿠폰 수량 0으로 설정
+        Coupon coupon = Coupon.create(null, null, null, 0); // 쿠폰 수량 0으로 설정
 
         // When & Then
         CustomException exception = assertThrows(CustomException.class, coupon::claim);
