@@ -92,8 +92,8 @@ public class UserServiceTest {
     @Test
     void testGetBalance_Success() {
         // given
-        String userId = "1"; // 유저 ID
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        Long userId = 1L; // 유저 ID
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // when
         BalanceResponse response = userService.getBalance(userId);
@@ -108,8 +108,8 @@ public class UserServiceTest {
     @Test
     void testGetBalance_UserNotFound() {
         // given
-        String invalidUserId = "999999"; // 존재하지 않는 유저 ID
-        when(userRepository.findById(999999L)).thenReturn(Optional.empty());
+        Long invalidUserId = 999999L; // 존재하지 않는 유저 ID
+        when(userRepository.findById(invalidUserId)).thenReturn(Optional.empty());
 
         // when & then
         CustomException exception = assertThrows(CustomException.class, () -> {

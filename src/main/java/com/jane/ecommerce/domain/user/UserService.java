@@ -35,9 +35,9 @@ public class UserService {
     }
 
     // 잔액 조회
-    public BalanceResponse getBalance(String userId) {
-        User user = userRepository.findById(Long.parseLong(userId))
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ userId }));
+    public BalanceResponse getBalance(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
 
         return new BalanceResponse(user.getId(), user.getBalance());
     }
