@@ -1,8 +1,10 @@
 package com.jane.ecommerce.application.payment;
 
+import com.jane.ecommerce.base.dto.BaseErrorCode;
 import com.jane.ecommerce.base.exception.BaseCustomException;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.order.Order;
+import com.jane.ecommerce.domain.order.OrderClient;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderService;
 import com.jane.ecommerce.domain.payment.Payment;
@@ -26,7 +28,7 @@ public class PaymentUseCase {
     private final PaymentService paymentService;
     private final UserService userService; // 사용자 잔액 관련 서비스
     private final OrderService orderService; // 주문 관련 서비스
-    private final ExternalPlatformService externalPlatformService; // 외부 데이터 전송 서비스
+    private final OrderClient orderClient; // 외부 데이터 전송 서비스
 
     @Transactional
     public PaymentCreateResponse processPayment(PaymentRequest paymentRequest) {
@@ -63,7 +65,11 @@ public class PaymentUseCase {
         orderService.updateOrderStatus(order.getId(), "COMPLETED");
 
         // 주문 정보 외부 데이터 플랫폼 전송
-        externalPlatformService.sendOrderData(order);
+        boolean isSend = orderClient.send(order);
+
+        if (!isSend) {
+            throw new BaseCustomException(BaseErrorCode.CONFLICT);
+        }
 
         return new PaymentCreateResponse(payment.getId(), payment.getStatus(), payment.getUpdatedAt());
     }
