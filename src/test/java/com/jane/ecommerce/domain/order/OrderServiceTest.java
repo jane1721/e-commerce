@@ -2,7 +2,6 @@ package com.jane.ecommerce.domain.order;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +61,7 @@ public class OrderServiceTest {
         assertNotNull(createdOrder);
         assertEquals(0, createdOrder.getTotalAmount().compareTo(BigDecimal.valueOf(200L))); // 총 금액은 200
         assertEquals(0, createdOrder.getFinalAmount().compareTo(BigDecimal.valueOf(160L))); // 최종 금액은 160 (할인 적용)
-        assertEquals("PENDING", createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
+        assertEquals(OrderStatus.PENDING, createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
         assertEquals(orderItems, createdOrder.getOrderItems()); // 오더에 담긴 상품 목록
         verify(orderRepository, times(1)).save(any(Order.class)); // save 가 한 번 호출됐는지 확인
     }
@@ -96,7 +95,7 @@ public class OrderServiceTest {
         assertNotNull(createdOrder);
         assertEquals(BigDecimal.valueOf(200L), createdOrder.getTotalAmount()); // 총 금액은 200
         assertEquals(BigDecimal.valueOf(200L), createdOrder.getFinalAmount()); // 최종 금액은 200 (할인 없음)
-        assertEquals("PENDING", createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
+        assertEquals(OrderStatus.PENDING, createdOrder.getStatus()); // 상태는 PENDING 이어야 한다
         verify(orderRepository, times(1)).save(any(Order.class)); // save 가 한 번 호출됐는지 확인
     }
 
@@ -105,7 +104,7 @@ public class OrderServiceTest {
     public void testGetOrderById_Success() {
         // given
         Long orderId = 1L;
-        Order mockOrder = Order.of(orderId, null, null, null, "CONFIRMED");
+        Order mockOrder = Order.of(orderId, null, null, null, OrderStatus.COMPLETED);
 
         // 다른 속성들 설정
         when(orderRepository.findByIdWithOrderItems(orderId)).thenReturn(Optional.of(mockOrder));
@@ -116,7 +115,7 @@ public class OrderServiceTest {
         // then
         assertNotNull(order);
         assertEquals(orderId, order.getId());
-        assertEquals("CONFIRMED", order.getStatus());
+        assertEquals(OrderStatus.COMPLETED, order.getStatus());
         verify(orderRepository, times(1)).findByIdWithOrderItems(orderId);  // 메서드 호출 횟수 확인
     }
 
@@ -128,9 +127,7 @@ public class OrderServiceTest {
         when(orderRepository.findByIdWithOrderItems(orderId)).thenReturn(Optional.empty());
 
         // when & then
-        CustomException exception = assertThrows(CustomException.class, () -> {
-            orderService.getOrderById(orderId);
-        });
+        CustomException exception = assertThrows(CustomException.class, () -> orderService.getOrderById(orderId));
 
         assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(orderRepository, times(1)).findByIdWithOrderItems(orderId);  // 메서드 호출 횟수 확인
@@ -141,10 +138,10 @@ public class OrderServiceTest {
     void testUpdateOrderStatus_Success() {
         // given
         Long orderId = 1L;
-        String newStatus = "CONFIRMED";
+        OrderStatus newStatus = OrderStatus.COMPLETED;
 
         // 주문 mock 객체 생성
-        Order order = Order.of(orderId, null, null, null, "PENDING");
+        Order order = Order.of(orderId, null, null, null, OrderStatus.PENDING);
 
         // repository 가 반환할 mockOrder 설정
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
@@ -165,15 +162,13 @@ public class OrderServiceTest {
     void testUpdateOrderStatus_NotFound() {
         // given
         Long orderId = 1L;
-        String newStatus = "CONFIRMED";
+        OrderStatus newStatus = OrderStatus.COMPLETED;
 
         // 주문이 존재하지 않는 경우 (Optional.empty() 반환)
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         // when, then
-        CustomException exception = assertThrows(CustomException.class, () -> {
-            orderService.updateOrderStatus(orderId, newStatus);
-        });
+        CustomException exception = assertThrows(CustomException.class, () -> orderService.updateOrderStatus(orderId, newStatus));
 
         assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }

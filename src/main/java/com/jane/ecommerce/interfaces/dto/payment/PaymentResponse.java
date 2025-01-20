@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PaymentResponse {
     Long id;
-    String status;
     BigDecimal amount;
     String method;
     LocalDateTime updatedAt;

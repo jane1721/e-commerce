@@ -56,7 +56,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
 
-        // 도메인 엔티티 메서드 호출
+        // 도메인 엔티티 잔액 차감 메서드 호출
         user.deductBalance(amount);
 
         userRepository.save(user);
