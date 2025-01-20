@@ -25,7 +25,7 @@ public class PaymentService {
 
         BigDecimal amount = order.getTotalAmount();
 
-        Payment payment = Payment.of(null, order, amount, method, "INITIATED");
+        Payment payment = Payment.of(null, order, amount, method);
 
         return paymentRepository.save(payment);
     }

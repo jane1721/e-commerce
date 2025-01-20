@@ -1,5 +1,6 @@
 package com.jane.ecommerce.interfaces.dto.order;
 
+import com.jane.ecommerce.domain.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 public class OrderResponse {
 
     String id;
-    String status;
+    OrderStatus status;
     List<OrderItemDTO> orderItems;
     BigDecimal totalAmount;
     LocalDateTime createAt;

@@ -37,7 +37,8 @@ public class Order extends BaseEntity {
     private BigDecimal finalAmount;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -50,7 +51,7 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this); // 양방향 관계 설정
     }
 
-    private Order(Long id, User user, UserCoupon userCoupon, BigDecimal totalAmount, BigDecimal finalAmount, String status, List<OrderItem> orderItems, Payment payment) {
+    private Order(Long id, User user, UserCoupon userCoupon, BigDecimal totalAmount, BigDecimal finalAmount, OrderStatus status, List<OrderItem> orderItems, Payment payment) {
         this.id = id;
         this.user = user;
         this.userCoupon = userCoupon;
@@ -61,15 +62,15 @@ public class Order extends BaseEntity {
         this.payment = payment;
     }
 
-    public static Order create(User user, UserCoupon userCoupon, BigDecimal totalAmount, BigDecimal finalAmount, String status) {
+    public static Order create(User user, UserCoupon userCoupon, BigDecimal totalAmount, BigDecimal finalAmount, OrderStatus status) {
         return new Order(null, user, userCoupon, totalAmount, finalAmount, status, new ArrayList<>(), null);
     }
 
-    public static Order of(Long id, User user, BigDecimal totalAmount, BigDecimal finalAmount, String status) {
+    public static Order of(Long id, User user, BigDecimal totalAmount, BigDecimal finalAmount, OrderStatus status) {
         return new Order(id, user, null, totalAmount, finalAmount, status, new ArrayList<>(), null);
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 }

@@ -7,10 +7,8 @@ import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.order.Order;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -71,7 +69,7 @@ public class User extends BaseEntity {
 
     // 잔액 차감 메서드
     public void deductBalance(BigDecimal amount) {
-        if (this.balance.compareTo(amount) < 0) {
+        if (this.balance.compareTo(amount) < 0) { // 유저 잔액이 부족할 경우
             throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE, new String[]{ String.valueOf(this.id) });
         }
         this.balance = this.balance.subtract(amount);
