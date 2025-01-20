@@ -1,6 +1,6 @@
 package com.jane.ecommerce.interfaces.api;
 
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.domain.user.UserService;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
@@ -37,7 +37,7 @@ public class UserController {
     @Operation(summary = "잔액 조회", description = "사용자의 잔액을 조회합니다.")
     @Parameter(name = "id", description = "사용자 ID", required = true)
     @GetMapping("/{id}/balance")
-    public ResponseEntity<BaseResponseContent> getBalance(@PathVariable String id) {
+    public ResponseEntity<BaseResponseContent> getBalance(@PathVariable Long id) {
 
         BalanceResponse response = userService.getBalance(id);
 

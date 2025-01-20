@@ -1,4 +1,4 @@
-package com.jane.ecommerce.base.entity;
+package com.jane.ecommerce.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

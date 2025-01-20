@@ -2,7 +2,7 @@ package com.jane.ecommerce.interfaces.api;
 
 import com.jane.ecommerce.application.coupon.ClaimCouponUseCase;
 import com.jane.ecommerce.application.coupon.GetCouponsByUserIdUseCase;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.coupon.ClaimRequest;
 import com.jane.ecommerce.interfaces.dto.coupon.ClaimResponse;
 import com.jane.ecommerce.interfaces.dto.coupon.CouponResponse;
@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Coupon API", description = "쿠폰 API")

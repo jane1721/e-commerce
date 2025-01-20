@@ -1,7 +1,8 @@
 package com.jane.ecommerce.interfaces.api;
 
-import com.jane.ecommerce.application.payment.PaymentUseCase;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.application.payment.GetPaymentStatusUseCase;
+import com.jane.ecommerce.application.payment.ProcessPaymentUseCase;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentCreateResponse;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentRequest;
 import com.jane.ecommerce.interfaces.dto.payment.PaymentResponse;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/payments")
 public class PaymentController {
 
-    private final PaymentUseCase paymentUseCase;
+    private final ProcessPaymentUseCase processPaymentUseCase;
+    private final GetPaymentStatusUseCase getPaymentStatusUseCase;
 
     // 결제 요청
     @Operation(summary = "결제 요청", description = "주문에 대한 결제를 요청합니다.")
@@ -26,7 +28,7 @@ public class PaymentController {
     @PostMapping
     public ResponseEntity<BaseResponseContent> processPayment(@RequestBody PaymentRequest paymentRequest) {
 
-        PaymentCreateResponse response = paymentUseCase.processPayment(paymentRequest);
+        PaymentCreateResponse response = processPaymentUseCase.execute(paymentRequest);
 
         BaseResponseContent responseContent = new BaseResponseContent(response);
 
@@ -39,7 +41,7 @@ public class PaymentController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponseContent> getPaymentStatus(@PathVariable String id) {
 
-        PaymentResponse response = paymentUseCase.getPaymentStatus(id);
+        PaymentResponse response = getPaymentStatusUseCase.execute(id);
 
         return ResponseEntity.ok(new BaseResponseContent(response));
     }

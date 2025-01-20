@@ -1,7 +1,7 @@
 package com.jane.ecommerce.domain.user;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
@@ -32,11 +32,7 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         // 기본 유저 생성
-        user = new User();
-        user.setId(1L);
-        user.setUsername("jane");
-        user.setPassword("password");
-        user.setBalance(BigDecimal.valueOf(1000L)); // 초기 잔액
+        user = User.of(1L, "jane", "password", BigDecimal.valueOf(1000L)); // 초기 잔액
     }
 
     // 잔액 충전 성공
@@ -66,11 +62,11 @@ public class UserServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.chargeBalance(request);
         });
 
-        assertEquals(BaseErrorCode.INVALID_PARAMETER, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.INVALID_PARAMETER, exception.getErrorCode());
         verify(userRepository, never()).save(user); // 저장 메서드가 호출되지 않았음을 확인
     }
 
@@ -84,11 +80,11 @@ public class UserServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.chargeBalance(request);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(userRepository, never()).save(any(User.class)); // 저장 메서드가 호출되지 않았음을 확인
     }
 
@@ -96,8 +92,8 @@ public class UserServiceTest {
     @Test
     void testGetBalance_Success() {
         // given
-        String userId = "1"; // 유저 ID
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        Long userId = 1L; // 유저 ID
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // when
         BalanceResponse response = userService.getBalance(userId);
@@ -112,15 +108,15 @@ public class UserServiceTest {
     @Test
     void testGetBalance_UserNotFound() {
         // given
-        String invalidUserId = "999999"; // 존재하지 않는 유저 ID
-        when(userRepository.findById(999999L)).thenReturn(Optional.empty());
+        Long invalidUserId = 999999L; // 존재하지 않는 유저 ID
+        when(userRepository.findById(invalidUserId)).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.getBalance(invalidUserId);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
     }
 
     // 유저 조회 성공
@@ -148,11 +144,11 @@ public class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // when, then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.getUserById(userId);
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }
 
     // 잔액 차감 성공
@@ -178,11 +174,11 @@ public class UserServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.deductUserBalance(user.getId(), deductAmount);
         });
 
-        assertEquals(BaseErrorCode.INSUFFICIENT_BALANCE, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.INSUFFICIENT_BALANCE, exception.getErrorCode()); // 예외 코드 확인
         assertEquals(BigDecimal.valueOf(1000L), user.getBalance()); // 잔액이 변경되지 않았음을 확인
         verify(userRepository, never()).save(user); // 저장 메서드가 호출되지 않았음을 확인
     }
@@ -195,11 +191,23 @@ public class UserServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             userService.deductUserBalance(999999L, deductAmount); // 존재하지 않는 유저 ID
         });
 
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
         verify(userRepository, never()).save(any(User.class)); // 저장 메서드가 호출되지 않았음을 확인
+    }
+
+    // 유저 존재 여부 확인 성공
+    @Test
+    void testIsUserExists_Success() {
+        // given
+        when(userRepository.findByUsername("jane")).thenReturn(Optional.of(User.create("jane", null, null)));
+        when(userRepository.findByUsername("nonUser")).thenReturn(Optional.empty());
+
+        // when & then
+        assertTrue(userService.isUserExists("jane"));
+        assertFalse(userService.isUserExists("nonUser"));
     }
 }

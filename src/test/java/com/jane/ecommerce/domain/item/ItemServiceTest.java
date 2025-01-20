@@ -2,7 +2,6 @@ package com.jane.ecommerce.domain.item;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,13 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderRepository;
+import com.jane.ecommerce.domain.order.OrderStatus;
 import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -97,12 +96,10 @@ public class ItemServiceTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.empty());
 
         // when
-        BaseCustomException exception = assertThrows(BaseCustomException.class, () -> {
-            itemService.getItemById(itemId);
-        });
+        CustomException exception = assertThrows(CustomException.class, () -> itemService.getItemById(itemId));
 
         // then
-        assertEquals(BaseErrorCode.NOT_FOUND, exception.getBaseErrorCode()); // 예외 코드 확인
+        assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode()); // 예외 코드 확인
     }
 
     @Test
@@ -115,7 +112,7 @@ public class ItemServiceTest {
         // 샘플 주문 데이터 생성
         OrderItem orderItemA = OrderItem.of(1L, null, itemA, 10);
         OrderItem orderItemB = OrderItem.of(2L, null, itemB, 5);
-        Order order = Order.of(1L, null, BigDecimal.valueOf(10000L), BigDecimal.valueOf(9500L), "COMPLETED");
+        Order order = Order.of(1L, null, BigDecimal.valueOf(10000L), BigDecimal.valueOf(9500L), OrderStatus.COMPLETED);
         order.addOrderItem(orderItemA);
         order.addOrderItem(orderItemB);
 

@@ -1,6 +1,6 @@
 package com.jane.ecommerce.domain.coupon;
 
-import com.jane.ecommerce.base.entity.BaseEntity;
+import com.jane.ecommerce.domain.BaseEntity;
 import com.jane.ecommerce.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.jane.ecommerce.interfaces.api;
 
-import com.jane.ecommerce.base.dto.response.BaseResponse;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponse;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
 import com.jane.ecommerce.interfaces.dto.cart.CartDeleteRequest;
 import com.jane.ecommerce.interfaces.dto.cart.CartInsertRequest;
 import com.jane.ecommerce.interfaces.dto.cart.CartItemResponse;

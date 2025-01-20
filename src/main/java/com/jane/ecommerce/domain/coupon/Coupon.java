@@ -1,15 +1,14 @@
 package com.jane.ecommerce.domain.coupon;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.entity.BaseEntity;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.BaseEntity;
+import com.jane.ecommerce.domain.error.CustomException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,27 +35,27 @@ public class Coupon extends BaseEntity {
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCoupon> userCoupons;
 
-    private Coupon(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
+    private Coupon(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
         this.id = id;
         this.code = code;
         this.discountPercent = discountPercent;
         this.expiryDate = expiryDate;
         this.quantity = quantity;
-        this.userCoupons = userCoupons;
+        this.userCoupons = new ArrayList<>();
     }
 
-    public static Coupon create(String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
-        return new Coupon(null, code, discountPercent, expiryDate, quantity, userCoupons);
+    public static Coupon create(String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
+        return new Coupon(null, code, discountPercent, expiryDate, quantity);
     }
 
-    public static Coupon of(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity, List<UserCoupon> userCoupons) {
-        return new Coupon(id, code, discountPercent, expiryDate, quantity, userCoupons);
+    public static Coupon of(Long id, String code, Long discountPercent, LocalDateTime expiryDate, int quantity) {
+        return new Coupon(id, code, discountPercent, expiryDate, quantity);
     }
 
     // 쿠폰 발급
     public void claim() {
         if (this.quantity <= 0) {
-            throw new BaseCustomException(BaseErrorCode.CONFLICT);
+            throw new CustomException(ErrorCode.CONFLICT);
         }
 
         // 쿠폰 수량 감소

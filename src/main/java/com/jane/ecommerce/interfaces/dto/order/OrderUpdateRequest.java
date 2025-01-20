@@ -1,5 +1,6 @@
 package com.jane.ecommerce.interfaces.dto.order;
 
+import com.jane.ecommerce.domain.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderUpdateRequest {
 
-    String status;
+    OrderStatus status;
 }

@@ -1,4 +1,4 @@
-package com.jane.ecommerce.base.dto.response;
+package com.jane.ecommerce.interfaces.dto.response;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

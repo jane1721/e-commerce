@@ -1,5 +1,6 @@
 package com.jane.ecommerce.interfaces.dto.order;
 
+import com.jane.ecommerce.domain.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,6 @@ import java.time.LocalDateTime;
 public class OrderUpdateResponse {
 
     String id;
-    String status;
+    OrderStatus status;
     LocalDateTime updatedAt;
 }

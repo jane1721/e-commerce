@@ -2,8 +2,8 @@ package com.jane.ecommerce.interfaces.api;
 
 import com.jane.ecommerce.application.item.GetItemsUseCase;
 import com.jane.ecommerce.application.item.GetTopItemsUseCase;
-import com.jane.ecommerce.base.dto.response.BaseResponseContent;
-import com.jane.ecommerce.base.dto.response.BaseResponsePage;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponseContent;
+import com.jane.ecommerce.interfaces.dto.response.BaseResponsePage;
 import com.jane.ecommerce.interfaces.dto.item.ItemResponse;
 import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
 import io.swagger.v3.oas.annotations.Operation;

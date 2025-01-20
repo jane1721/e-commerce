@@ -1,6 +1,6 @@
 package com.jane.ecommerce.domain.payment;
 
-import com.jane.ecommerce.base.entity.BaseEntity;
+import com.jane.ecommerce.domain.BaseEntity;
 import com.jane.ecommerce.domain.order.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,22 +27,18 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private String method;
 
-    @Column(nullable = false)
-    private String status;
-
-    private Payment(Long id, Order order, BigDecimal amount, String method, String status) {
+    private Payment(Long id, Order order, BigDecimal amount, String method) {
         this.id = id;
         this.order = order;
         this.amount = amount;
         this.method = method;
-        this.status = status;
     }
 
-    public static Payment create(Order order, BigDecimal amount, String method, String status) {
-        return new Payment(null, order, amount, method, status);
+    public static Payment create(Order order, BigDecimal amount, String method) {
+        return new Payment(null, order, amount, method);
     }
 
-    public static Payment of(Long id, Order order, BigDecimal amount, String method, String status) {
-        return new Payment(id, order, amount, method, status);
+    public static Payment of(Long id, Order order, BigDecimal amount, String method) {
+        return new Payment(id, order, amount, method);
     }
 }

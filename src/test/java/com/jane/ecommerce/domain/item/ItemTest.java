@@ -1,7 +1,7 @@
 package com.jane.ecommerce.domain.item;
 
-import com.jane.ecommerce.base.dto.BaseErrorCode;
-import com.jane.ecommerce.base.exception.BaseCustomException;
+import com.jane.ecommerce.domain.error.ErrorCode;
+import com.jane.ecommerce.domain.error.CustomException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -30,13 +30,13 @@ public class ItemTest {
         Item item = Item.of(1L,"Item A", BigDecimal.ONE, 3); // 초기 재고 3
 
         // when & then
-        BaseCustomException exception = assertThrows(
-                BaseCustomException.class,
+        CustomException exception = assertThrows(
+                CustomException.class,
                 () -> item.decreaseStock(5)
         );
 
         // 예외 메시지 확인
-        assertEquals(BaseErrorCode.INSUFFICIENT_STOCK, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.INSUFFICIENT_STOCK, exception.getErrorCode());
     }
 
     // 재고 복구 성공
@@ -59,12 +59,12 @@ public class ItemTest {
         Item item = Item.create("Item A", BigDecimal.ONE, 10); // 초기 재고 10
 
         // when & then
-        BaseCustomException exception = assertThrows(
-                BaseCustomException.class,
+        CustomException exception = assertThrows(
+                CustomException.class,
                 () -> item.restoreStock(-5) // 음수 복구 시도
         );
 
         // 예외 메시지 확인
-        assertEquals(BaseErrorCode.INVALID_PARAMETER, exception.getBaseErrorCode());
+        assertEquals(ErrorCode.INVALID_PARAMETER, exception.getErrorCode());
     }
 }
