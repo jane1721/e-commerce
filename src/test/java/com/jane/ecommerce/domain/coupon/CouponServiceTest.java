@@ -41,7 +41,7 @@ public class CouponServiceTest {
         Coupon coupon = Coupon.of(couponId, null, null, null, 10);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByIdWithPessimisticLock(couponId)).thenReturn(Optional.of(coupon));
         when(userCouponRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // when
@@ -81,7 +81,7 @@ public class CouponServiceTest {
         User user = User.of(userId, null, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
+        when(couponRepository.findByIdWithPessimisticLock(couponId)).thenReturn(Optional.empty());
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
@@ -89,7 +89,7 @@ public class CouponServiceTest {
         // then
         assertEquals(ErrorCode.NOT_FOUND, exception.getErrorCode());
         verify(userRepository).findById(userId);
-        verify(couponRepository).findById(couponId);
+        verify(couponRepository).findByIdWithPessimisticLock(couponId);
         verifyNoInteractions(userCouponRepository);
     }
 
@@ -104,7 +104,7 @@ public class CouponServiceTest {
         Coupon coupon = Coupon.of(couponId, null, null, null, 0);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByIdWithPessimisticLock(couponId)).thenReturn(Optional.of(coupon));
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
@@ -112,7 +112,7 @@ public class CouponServiceTest {
         // then
         assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
         verify(userRepository).findById(userId);
-        verify(couponRepository).findById(couponId);
+        verify(couponRepository).findByIdWithPessimisticLock(couponId);
         verifyNoInteractions(userCouponRepository);
     }
 

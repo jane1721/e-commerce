@@ -48,6 +48,11 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
     }
 
+    public User getUserByIdWithLock(Long userId) {
+        return userRepository.findByIdWithPessimisticLock(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) })); // 유저가 없을 경우 예외 처리
+    }
+
     // 잔액 차감
     @Transactional
     public void deductUserBalance(Long userId, BigDecimal amount) {

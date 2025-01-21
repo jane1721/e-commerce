@@ -35,7 +35,7 @@ public class CreateOrderUseCase {
         // OrderItemDTO -> OrderItem 변환
         List<OrderItem> orderItems = orderItemDTOs.stream()
             .map(dto -> {
-                Item item = itemService.getItemById(Long.parseLong(dto.getItemId())); // itemId 로 Item 조회
+                Item item = itemService.getItemByIdWithLock(Long.parseLong(dto.getItemId())); // itemId 로 Item 조회
 
                 // 재고 차감
                 item.decreaseStock(dto.getQuantity());

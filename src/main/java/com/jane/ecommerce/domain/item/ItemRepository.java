@@ -8,4 +8,5 @@ public interface ItemRepository {
     Page<Item> findAll(Pageable pageable);
     Optional<Item> findById(Long itemId);
     Item save(Item item);
+    Optional<Item> findByIdWithPessimisticLock(Long itemId);
 }
