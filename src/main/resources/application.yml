@@ -2,7 +2,7 @@ spring:
   application:
     name: e-commerce
   profiles:
-    active: test
+    active: local
   datasource:
     name: ecommerce
     type: com.zaxxer.hikari.HikariDataSource
@@ -41,4 +41,4 @@ spring.config.activate.on-profile: test
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create

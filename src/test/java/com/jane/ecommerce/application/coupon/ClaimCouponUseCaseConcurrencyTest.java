@@ -4,9 +4,9 @@ import com.jane.ecommerce.application.IntegrationTest;
 import com.jane.ecommerce.domain.coupon.Coupon;
 import com.jane.ecommerce.domain.coupon.CouponRepository;
 import com.jane.ecommerce.domain.coupon.UserCouponRepository;
-import com.jane.ecommerce.domain.user.UserRepository;
 import com.jane.ecommerce.interfaces.dto.coupon.ClaimRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,9 +21,6 @@ public class ClaimCouponUseCaseConcurrencyTest extends IntegrationTest {
 
     @Autowired
     private ClaimCouponUseCase claimCouponUseCase;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -41,8 +38,9 @@ public class ClaimCouponUseCaseConcurrencyTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("20명이 동시에 쿠폰을 발급하더라도, 발급된 쿠폰의 개수는 총 발급 가능 수량을 초과하지 않아야 한다.")
     void testConcurrentCouponClaims() throws InterruptedException {
-        // Given: 클라이언트 요청 데이터 준비
+        // given: 클라이언트 요청 데이터 준비
         Long userId = 1L;
         Long couponId = testCoupon.getId();
         ClaimRequest claimRequest = new ClaimRequest(userId.toString(), couponId.toString());
@@ -53,7 +51,7 @@ public class ClaimCouponUseCaseConcurrencyTest extends IntegrationTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
-        // When: 여러 스레드에서 동시에 쿠폰 발급 시도
+        // when: 여러 스레드에서 동시에 쿠폰 발급 시도
         for (int i = 0; i < numberOfThreads; i++) {
             executorService.submit(() -> {
                 try {
@@ -67,7 +65,7 @@ public class ClaimCouponUseCaseConcurrencyTest extends IntegrationTest {
         // 모든 스레드가 작업을 마칠 때까지 기다림
         latch.await();
 
-        // Then: 결과 검증
+        // then: 결과 검증
         Coupon updatedCoupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
 
         // 발급 수량이 0보다 크거나 같은지 확인

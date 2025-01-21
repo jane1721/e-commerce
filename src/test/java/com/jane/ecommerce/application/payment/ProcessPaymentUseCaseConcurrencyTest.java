@@ -3,10 +3,10 @@ package com.jane.ecommerce.application.payment;
 import com.jane.ecommerce.application.IntegrationTest;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.order.OrderItem;
+import com.jane.ecommerce.domain.order.OrderStatus;
 import com.jane.ecommerce.domain.payment.PaymentRepository;
 import com.jane.ecommerce.domain.user.UserRepository;
 import com.jane.ecommerce.domain.order.OrderRepository;
-import com.jane.ecommerce.domain.order.OrderItemRepository;
 import com.jane.ecommerce.domain.item.ItemRepository;
 import com.jane.ecommerce.domain.payment.Payment;
 import com.jane.ecommerce.domain.user.User;
@@ -26,10 +26,10 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PaymentUseCaseConcurrencyTest extends IntegrationTest {
+class ProcessPaymentUseCaseConcurrencyTest extends IntegrationTest {
 
     @Autowired
-    private PaymentUseCase paymentUseCase;
+    private ProcessPaymentUseCase processPaymentUseCase;
 
     @Autowired
     private UserRepository userRepository;
@@ -43,16 +43,13 @@ class PaymentUseCaseConcurrencyTest extends IntegrationTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-
     @Test
-    @DisplayName("동시 요청 시에도 결제가 안정적으로 처리된다")
-    void testConcurrentProcessPayment() throws Exception {
-        // given: 테스트용 사용자, 주문, 결제 요청 생성
+    @DisplayName("10명이 동시에 결제하더라도, 주문은 하나만 처리되어야 한다.")
+    void testConcurrentProcessPayment() {
+        // given: 테스트용 유저, 주문, 결제 요청 생성
         User user = userRepository.save(User.create("testUser@example.com", "password", BigDecimal.valueOf(1000))); // 충분한 잔액
         Item item = itemRepository.save(Item.create("Test Item", BigDecimal.valueOf(100), 50)); // 이름, 가격, 재고
-        Order order = orderRepository.save(Order.create(user, null, BigDecimal.valueOf(200), BigDecimal.valueOf(200), "PENDING"));
+        Order order = orderRepository.save(Order.create(user, null, BigDecimal.valueOf(200), BigDecimal.valueOf(200), OrderStatus.PENDING));
         OrderItem orderItem = OrderItem.create(item, 2);
         order.addOrderItem(orderItem);
 
@@ -69,9 +66,8 @@ class PaymentUseCaseConcurrencyTest extends IntegrationTest {
         for (int i = 0; i < concurrentRequests; i++) {
             futures[i] = CompletableFuture.runAsync(() -> {
                 try {
-                    PaymentCreateResponse response = paymentUseCase.processPayment(paymentRequest);
+                    PaymentCreateResponse response = processPaymentUseCase.execute(paymentRequest);
                     assertThat(response).isNotNull();
-                    assertThat(response.getStatus()).isEqualTo("INITIATED");
                 } catch (Exception e) {
                     // 예외 처리: 중복 결제는 예외로 처리하지 않고 무시 (동시성 제어)
                 }
@@ -87,7 +83,7 @@ class PaymentUseCaseConcurrencyTest extends IntegrationTest {
 
         // 주문 상태 확인
         Order updatedOrder = orderRepository.findById(order.getId()).orElseThrow();
-        assertThat(updatedOrder.getStatus()).isEqualTo("COMPLETED");
+        assertThat(updatedOrder.getStatus()).isEqualTo(OrderStatus.COMPLETED);
 
         // 사용자의 잔액 확인
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();

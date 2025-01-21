@@ -41,9 +41,9 @@ class CreateOrderUseCaseConcurrencyTest extends IntegrationTest {
     private UserCouponRepository userCouponRepository;
 
     @Test
-    @DisplayName("동시 요청 시에도 주문이 안정적으로 처리된다")
-    void testConcurrentCreateOrder() throws Exception {
-        // given: 테스트용 사용자, 아이템, 쿠폰 생성
+    @DisplayName("10명이 동시에 주문하더라도, 보유 재고보다 총 주문량이 적으면 모든 주문은 성공한다.")
+    void testConcurrentCreateOrder() {
+        // given: 테스트용 유저, 상품, 쿠폰 생성
         User user = userRepository.save(User.create("testUser@example.com", "password", BigDecimal.valueOf(100)));
         Item item = itemRepository.save(Item.create("Test Item", BigDecimal.valueOf(100), 50)); // 이름, 가격, 재고
         Coupon coupon = couponRepository.save(Coupon.create("Discount-5", 5L, LocalDateTime.of(2025, 3, 31, 23, 59, 59), 10));
