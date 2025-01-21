@@ -56,7 +56,7 @@ public class OrderController {
     @Parameter(name = "id", description = "주문 ID", required = true)
     @Parameter(name = "orderUpdateRequest", description = "주문 상태 업데이트 요청 정보", required = true)
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponseContent> updateOrderStatus(@PathVariable String id, @RequestBody OrderUpdateRequest orderUpdateRequest) {
+    public ResponseEntity<BaseResponseContent> updateOrderStatus(@PathVariable Long id, @RequestBody OrderUpdateRequest orderUpdateRequest) {
 
         OrderUpdateResponse response = updateOrderStatusUseCase.execute(id, orderUpdateRequest);
 

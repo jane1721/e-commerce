@@ -11,6 +11,7 @@ import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.order.Order;
 import com.jane.ecommerce.domain.order.OrderItem;
 import com.jane.ecommerce.domain.order.OrderRepository;
+import com.jane.ecommerce.domain.order.OrderStatus;
 import com.jane.ecommerce.interfaces.dto.item.TopItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class ItemService {
 
         // 주문 아이템에서 상품과 수량을 추출하여 집계
         for (Order order : orders) {
-            if ("COMPLETED".equals(order.getStatus())) { // 완료된 주문만 고려
+            if (order.getStatus().equals(OrderStatus.COMPLETED)) { // 완료된 주문만 고려
                 for (OrderItem orderItem : order.getOrderItems()) {
                     Long itemId = orderItem.getItem().getId();
                     itemSales.put(itemId, itemSales.getOrDefault(itemId, 0) + orderItem.getQuantity());

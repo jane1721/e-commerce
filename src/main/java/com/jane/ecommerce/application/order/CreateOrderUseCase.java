@@ -47,7 +47,10 @@ public class CreateOrderUseCase {
 
 
         // userCouponId 로 UserCoupon 객체 조회
-        UserCoupon userCoupon = couponService.getUserCouponById(Long.parseLong(userCouponId));
+        UserCoupon userCoupon = null;
+        if (userCouponId != null) {
+            userCoupon = couponService.getUserCouponById(Long.parseLong(userCouponId));
+        }
 
         // 주문 생성
         Order order = orderService.createOrder(user, orderItems, userCoupon);

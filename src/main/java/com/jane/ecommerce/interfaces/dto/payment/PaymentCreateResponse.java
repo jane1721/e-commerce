@@ -12,6 +12,5 @@ import java.time.LocalDateTime;
 public class PaymentCreateResponse {
 
     Long id;
-    String status;
     LocalDateTime createdAt;
 }
