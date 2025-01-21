@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ClaimRequest {
 
-    String userId;
-    String couponId;
+    Long userId;
+    Long couponId;
 }

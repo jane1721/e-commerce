@@ -18,7 +18,7 @@ public class ClaimCouponUseCase {
     public ClaimResponse execute(ClaimRequest claimRequest) {
 
         // 쿠폰 발급
-        UserCoupon userCoupon = couponService.claimCoupon(Long.parseLong(claimRequest.getUserId()), Long.parseLong(claimRequest.getCouponId()));
+        UserCoupon userCoupon = couponService.claimCoupon(claimRequest.getUserId(), claimRequest.getCouponId());
 
         // 발급된 쿠폰 정보를 응답 형식으로 변환
         return new ClaimResponse(userCoupon.getCoupon().getCode());

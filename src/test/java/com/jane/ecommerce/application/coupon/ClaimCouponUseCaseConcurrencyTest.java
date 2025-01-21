@@ -43,7 +43,7 @@ public class ClaimCouponUseCaseConcurrencyTest extends IntegrationTest {
         // given: 클라이언트 요청 데이터 준비
         Long userId = 1L;
         Long couponId = testCoupon.getId();
-        ClaimRequest claimRequest = new ClaimRequest(userId.toString(), couponId.toString());
+        ClaimRequest claimRequest = new ClaimRequest(userId, couponId);
 
         // 동시성 테스트를 위한 CountDownLatch 설정
         int numberOfThreads = 20;
