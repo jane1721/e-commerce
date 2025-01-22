@@ -23,24 +23,17 @@ public class OrderService {
     @Transactional
     public Order createOrder(User user, List<OrderItem> orderItems, UserCoupon userCoupon) {
 
-        // 전체 가격 계산 로직
-        BigDecimal totalAmount = orderItems.stream()
-                .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        Order order = Order.create(user, userCoupon, BigDecimal.ZERO, BigDecimal.ZERO, OrderStatus.PENDING); // 주문 생성 시 PENDING 상태로 생성
 
-        // 쿠폰 적용하여 최종 가격 계산 로직
-        BigDecimal finalAmount = totalAmount;
-        if (userCoupon != null && userCoupon.getCoupon() != null) {
-            BigDecimal discountPercent = BigDecimal.valueOf(userCoupon.getCoupon().getDiscountPercent());
-            BigDecimal discountFactor = BigDecimal.ONE.subtract(discountPercent.divide(BigDecimal.valueOf(100)));
-            finalAmount = totalAmount.multiply(discountFactor); // 할인 비율을 적용하여 최종 금액 계산
-        }
-
-        Order order = Order.create(user, userCoupon, totalAmount, finalAmount, OrderStatus.PENDING); // 주문 생성 시 PENDING 상태로 생성
-
+        // 주문 상품 추가
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
+
+        // 전체 주문 금액 계산
+        order.calculateTotalAmount();
+        // 쿠폰 적용하여 최종 주문 금액 계산
+        order.calculateFinalAmount();
 
         return orderRepository.save(order);
     }
