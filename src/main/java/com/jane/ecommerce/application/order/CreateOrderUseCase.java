@@ -2,6 +2,7 @@ package com.jane.ecommerce.application.order;
 
 import com.jane.ecommerce.domain.coupon.CouponService;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
+import com.jane.ecommerce.domain.coupon.UserCouponService;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.item.ItemService;
 import com.jane.ecommerce.domain.order.Order;
@@ -25,6 +26,7 @@ public class CreateOrderUseCase {
     private final UserService userService;
     private final ItemService itemService;
     private final CouponService couponService;
+    private final UserCouponService userCouponService;
 
     @Transactional
     public OrderCreateResponse execute(String userId, List<OrderItemDTO> orderItemDTOs, String userCouponId) {
@@ -45,11 +47,13 @@ public class CreateOrderUseCase {
             })
             .collect(Collectors.toList());
 
-
         // userCouponId 로 UserCoupon 객체 조회
         UserCoupon userCoupon = null;
         if (userCouponId != null) {
             userCoupon = couponService.getUserCouponById(Long.parseLong(userCouponId));
+
+            userCoupon.updateCouponIsUsed(true); // 유저 쿠폰 사용 처리
+            userCouponService.save(userCoupon); // 유저 쿠폰 업데이트
         }
 
         // 주문 생성

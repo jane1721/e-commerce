@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-
 @RequiredArgsConstructor
 @Service
 public class ProcessPaymentUseCase {
@@ -35,10 +33,9 @@ public class ProcessPaymentUseCase {
 
         // 주문 최종 금액 확인
         Order order = orderService.getOrderById(Long.parseLong(paymentRequest.getOrderId()));
-        BigDecimal finalAmount = order.getFinalAmount();
 
         // 잔액 차감
-        userService.deductUserBalance(user.getId(), finalAmount);
+        userService.deductUserBalance(user.getId(), order.getFinalAmount());
 
         // 결제 생성
         Payment payment = paymentService.createPayment(Long.parseLong(paymentRequest.getOrderId()), paymentRequest.getMethod());

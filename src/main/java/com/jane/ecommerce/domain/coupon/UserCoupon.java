@@ -40,4 +40,8 @@ public class UserCoupon extends BaseEntity {
     public static UserCoupon of(Long id, User user, Coupon coupon, Boolean isUsed) {
         return new UserCoupon(id, user, coupon, isUsed);
     }
+
+    public void updateCouponIsUsed(Boolean isUsed) {
+        this.isUsed = isUsed;
+    }
 }

@@ -1,5 +1,6 @@
 package com.jane.ecommerce.application.order;
 
+import com.jane.ecommerce.domain.coupon.UserCouponService;
 import com.jane.ecommerce.domain.item.Item;
 import com.jane.ecommerce.domain.item.ItemService;
 import com.jane.ecommerce.domain.order.Order;
@@ -18,6 +19,7 @@ public class UpdateOrderStatusUseCase {
 
     private final OrderService orderService;
     private final ItemService itemService;
+    private final UserCouponService userCouponService;
 
     @Transactional
     public OrderUpdateResponse execute(Long id, OrderUpdateRequest request) {
@@ -31,6 +33,12 @@ public class UpdateOrderStatusUseCase {
                 Item item = orderItem.getItem();
                 item.restoreStock(orderItem.getQuantity());  // 재고 복구
                 itemService.save(item); // 재고 업데이트
+            }
+
+            if (order.getUserCoupon() != null) {
+
+                order.getUserCoupon().updateCouponIsUsed(false); // 유저 쿠폰 미사용 처리
+                userCouponService.save(order.getUserCoupon()); // 유저 쿠폰 업데이트
             }
 
             // 주문 상태 취소 변경
