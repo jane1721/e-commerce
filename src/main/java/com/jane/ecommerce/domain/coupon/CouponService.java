@@ -4,6 +4,7 @@ import com.jane.ecommerce.domain.error.ErrorCode;
 import com.jane.ecommerce.domain.error.CustomException;
 import com.jane.ecommerce.domain.user.User;
 import com.jane.ecommerce.domain.user.UserRepository;
+import com.jane.ecommerce.support.aop.annotation.DistributedLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class CouponService {
     private final UserCouponRepository userCouponRepository;
 
     // 쿠폰 발급
-    @Transactional
+    @DistributedLock(key = "#couponId")
     public UserCoupon claimCoupon(Long userId, Long couponId) {
 
         // 유저 조회
@@ -28,7 +29,7 @@ public class CouponService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
 
         // 쿠폰 조회
-        Coupon coupon = couponRepository.findByIdWithPessimisticLock(couponId)
+        Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(couponId) }));
 
         // 쿠폰 발급

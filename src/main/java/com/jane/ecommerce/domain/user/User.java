@@ -3,7 +3,6 @@ package com.jane.ecommerce.domain.user;
 import com.jane.ecommerce.domain.error.ErrorCode;
 import com.jane.ecommerce.domain.BaseEntity;
 import com.jane.ecommerce.domain.error.CustomException;
-import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.coupon.UserCoupon;
 import com.jane.ecommerce.domain.order.Order;
 import jakarta.persistence.*;
@@ -32,9 +31,6 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private BigDecimal balance;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
