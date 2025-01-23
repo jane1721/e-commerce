@@ -6,6 +6,7 @@ import com.jane.ecommerce.interfaces.dto.user.BalanceResponse;
 import com.jane.ecommerce.interfaces.dto.user.ChargeRequest;
 import com.jane.ecommerce.interfaces.dto.user.ChargeResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,13 +59,16 @@ public class UserService {
     public void deductUserBalance(Long userId, BigDecimal amount) {
 
         // 유저 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(userId) }));
+        User user = getUserById(userId);
 
         // 도메인 엔티티 잔액 차감 메서드 호출
         user.deductBalance(amount);
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (OptimisticEntityLockException e) {
+            throw new CustomException(ErrorCode.CONFLICT);
+        }
     }
 
     // 유저 존재 여부 확인

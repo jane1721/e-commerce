@@ -31,7 +31,7 @@ public class ProcessPaymentUseCase {
     public PaymentCreateResponse execute(PaymentRequest paymentRequest) {
 
         // 사용자 잔액 조회
-        User user = userService.getUserByIdWithLock(Long.parseLong(paymentRequest.getUserId()));
+        User user = userService.getUserById(Long.parseLong(paymentRequest.getUserId()));
 
         // 주문 최종 금액 확인
         Order order = orderService.getOrderById(Long.parseLong(paymentRequest.getOrderId()));
