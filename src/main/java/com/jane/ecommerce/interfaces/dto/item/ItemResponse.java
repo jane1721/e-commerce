@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ItemResponse {
 
-    String itemId;
+    Long id;
     String name;
     BigDecimal price;
     int stock;
 
     public static ItemResponse from(Item item) {
-        return new ItemResponse(item.getId().toString(), item.getName(), item.getPrice(), item.getStock());
+        return new ItemResponse(item.getId(), item.getName(), item.getPrice(), item.getStock());
     }
 }

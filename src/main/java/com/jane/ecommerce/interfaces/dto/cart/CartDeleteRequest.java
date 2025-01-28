@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartDeleteRequest {
 
-    String userId;
-    String itemId;
+    Long userId;
+    Long itemId;
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderCreateResponse {
 
-    String id;
+    Long id;
     OrderStatus status;
     int totalAmount;
     LocalDateTime createdAt;

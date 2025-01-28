@@ -80,7 +80,7 @@ public class ItemService {
         return topItemIds.stream()
                 .map(itemId -> {
                     Item item = itemRepository.findById(itemId).orElseThrow();
-                    return new TopItemResponse(item.getId().toString(), item.getName(), itemSales.get(itemId));
+                    return new TopItemResponse(item.getId(), item.getName(), itemSales.get(itemId));
                 })
                 .collect(Collectors.toList());
     }

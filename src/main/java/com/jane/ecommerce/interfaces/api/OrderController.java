@@ -42,7 +42,7 @@ public class OrderController {
     @Operation(summary = "특정 주문 조회", description = "특정 주문을 조회합니다.")
     @Parameter(name = "id", description = "주문 ID", required = true)
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponseContent> getOrder(@PathVariable String id) {
+    public ResponseEntity<BaseResponseContent> getOrder(@PathVariable Long id) {
 
         OrderResponse orderResponse = getOrderUseCase.execute(id);
 

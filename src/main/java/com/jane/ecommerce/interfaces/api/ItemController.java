@@ -36,7 +36,7 @@ public class ItemController {
     ) {
         Page<ItemResponse> items = getItemsUseCase.execute(pageable);
 
-        return ResponseEntity.ok(new BaseResponsePage<ItemResponse>(items));
+        return ResponseEntity.ok(new BaseResponsePage<>(items));
     }
 
     // 상위 상품 조회

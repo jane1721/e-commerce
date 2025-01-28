@@ -13,9 +13,9 @@ public class GetPaymentStatusUseCase {
     private final PaymentService paymentService;
 
     @Transactional(readOnly = true)
-    public PaymentResponse execute(String paymentId) {
+    public PaymentResponse execute(Long id) {
         // 결제 상태 조회
-        Payment payment = paymentService.getPaymentStatus(Long.valueOf(paymentId));
+        Payment payment = paymentService.getPaymentStatus(id);
 
         return new PaymentResponse(
                 payment.getId(),

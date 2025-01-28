@@ -39,9 +39,9 @@ public class PaymentService {
     }
 
     // 결제 상태 조회
-    public Payment getPaymentStatus(Long paymentId) {
-        return paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(paymentId) }));
+    public Payment getPaymentStatus(Long id) {
+        return paymentRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(id) }));
     }
 
 }

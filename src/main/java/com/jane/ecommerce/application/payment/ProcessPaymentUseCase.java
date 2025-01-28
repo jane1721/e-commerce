@@ -29,16 +29,16 @@ public class ProcessPaymentUseCase {
     public PaymentCreateResponse execute(PaymentRequest paymentRequest) {
 
         // 사용자 잔액 조회
-        User user = userService.getUserByIdWithLock(Long.parseLong(paymentRequest.getUserId()));
+        User user = userService.getUserByIdWithLock(paymentRequest.getUserId());
 
         // 주문 최종 금액 확인
-        Order order = orderService.getOrderById(Long.parseLong(paymentRequest.getOrderId()));
+        Order order = orderService.getOrderById(paymentRequest.getOrderId());
 
         // 잔액 차감
         userService.deductUserBalance(user.getId(), order.getFinalAmount());
 
         // 결제 생성
-        Payment payment = paymentService.createPayment(Long.parseLong(paymentRequest.getOrderId()), paymentRequest.getMethod());
+        Payment payment = paymentService.createPayment(paymentRequest.getOrderId(), paymentRequest.getMethod());
 
         // 주문 상태 완료 변경
         orderService.updateOrderStatus(order.getId(), OrderStatus.COMPLETED);

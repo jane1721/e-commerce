@@ -29,15 +29,15 @@ public class CreateOrderUseCase {
     private final UserCouponService userCouponService;
 
     @Transactional
-    public OrderCreateResponse execute(String userId, List<OrderItemDTO> orderItemDTOs, String userCouponId) {
+    public OrderCreateResponse execute(Long userId, List<OrderItemDTO> orderItemDTOs, Long userCouponId) {
 
         // userId 로 User 객체 조회
-        User user = userService.getUserById(Long.parseLong(userId));
+        User user = userService.getUserById(userId);
 
         // OrderItemDTO -> OrderItem 변환
         List<OrderItem> orderItems = orderItemDTOs.stream()
             .map(dto -> {
-                Item item = itemService.getItemByIdWithLock(Long.parseLong(dto.getItemId())); // itemId 로 Item 조회
+                Item item = itemService.getItemByIdWithLock(dto.getItemId()); // itemId 로 Item 조회
 
                 // 재고 차감
                 item.decreaseStock(dto.getQuantity());
@@ -50,7 +50,7 @@ public class CreateOrderUseCase {
         // userCouponId 로 UserCoupon 객체 조회
         UserCoupon userCoupon = null;
         if (userCouponId != null) {
-            userCoupon = couponService.getUserCouponById(Long.parseLong(userCouponId));
+            userCoupon = couponService.getUserCouponById(userCouponId);
 
             userCoupon.updateCouponIsUsed(true); // 유저 쿠폰 사용 처리
             userCouponService.save(userCoupon); // 유저 쿠폰 업데이트
@@ -60,6 +60,6 @@ public class CreateOrderUseCase {
         Order order = orderService.createOrder(user, orderItems, userCoupon);
 
         // OrderCreateResponse DTO 로 변환하여 반환
-        return new OrderCreateResponse(order.getId().toString(), order.getStatus(), order.getTotalAmount().intValue(), order.getCreatedAt());
+        return new OrderCreateResponse(order.getId(), order.getStatus(), order.getTotalAmount().intValue(), order.getCreatedAt());
     }
 }
