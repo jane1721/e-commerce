@@ -32,6 +32,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @Version // 낙관적 락을 위한 버전 관리 필드
+    private Long version;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
 
