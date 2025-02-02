@@ -36,7 +36,11 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
 
-    // DB
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.redisson:redisson-spring-boot-starter:3.23.4")
+
+	// DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
 	// Lombok

@@ -20,8 +20,8 @@ public enum ErrorCode {
 
     // Custom Error
     INSUFFICIENT_STOCK(HttpStatus.CONFLICT, "Insufficient stock for item"),
-    INSUFFICIENT_BALANCE(HttpStatus.CONFLICT, "Insufficient fund for user")
-    ;
+    INSUFFICIENT_BALANCE(HttpStatus.CONFLICT, "Insufficient fund for user"),
+    LOCK_FAILED(HttpStatus.CONFLICT, "Lock failed");
 
     private final HttpStatus httpStatus;
     private final String message;

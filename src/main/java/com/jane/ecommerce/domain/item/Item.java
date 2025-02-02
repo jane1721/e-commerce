@@ -3,7 +3,6 @@ package com.jane.ecommerce.domain.item;
 import com.jane.ecommerce.domain.error.ErrorCode;
 import com.jane.ecommerce.domain.BaseEntity;
 import com.jane.ecommerce.domain.error.CustomException;
-import com.jane.ecommerce.domain.cart.CartItem;
 import com.jane.ecommerce.domain.order.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,16 +33,12 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems = new ArrayList<>();
-
     private Item(Long id, String name, BigDecimal price, Integer stock) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.orderItems = new ArrayList<>();
-        this.cartItems = new ArrayList<>();
     }
 
     public static Item create(String name, BigDecimal price, Integer stock) {

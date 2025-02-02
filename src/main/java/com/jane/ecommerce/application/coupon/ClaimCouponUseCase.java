@@ -6,7 +6,6 @@ import com.jane.ecommerce.interfaces.dto.coupon.ClaimRequest;
 import com.jane.ecommerce.interfaces.dto.coupon.ClaimResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -14,7 +13,6 @@ public class ClaimCouponUseCase {
 
     private final CouponService couponService;
 
-    @Transactional
     public ClaimResponse execute(ClaimRequest claimRequest) {
 
         // 쿠폰 발급
