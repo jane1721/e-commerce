@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TopItemResponse {
 
-    String id;
+    Long id;
     String name;
     int soldCount;
 }

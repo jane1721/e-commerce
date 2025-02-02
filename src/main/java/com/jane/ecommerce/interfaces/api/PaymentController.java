@@ -39,7 +39,7 @@ public class PaymentController {
     @Operation(summary = "결제 상태 조회", description = "결제 상태를 조회합니다.")
     @Parameter(name = "id", description = "결제 ID", required = true)
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponseContent> getPaymentStatus(@PathVariable String id) {
+    public ResponseEntity<BaseResponseContent> getPaymentStatus(@PathVariable Long id) {
 
         PaymentResponse response = getPaymentStatusUseCase.execute(id);
 

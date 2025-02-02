@@ -55,7 +55,7 @@ class ProcessPaymentUseCaseConcurrencyTest extends IntegrationTest {
 
         order = orderRepository.save(order);
 
-        PaymentRequest paymentRequest = new PaymentRequest(order.getId().toString(), user.getId().toString(), "CREDIT_CARD");
+        PaymentRequest paymentRequest = new PaymentRequest(order.getId(), user.getId(), "CREDIT_CARD");
 
         // 동시성 테스트 준비
         int concurrentRequests = 10;

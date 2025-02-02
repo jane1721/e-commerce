@@ -18,15 +18,15 @@ public class GetOrderUseCase {
     private final OrderService orderService;
 
     @Transactional(readOnly = true)
-    public OrderResponse execute(String id) {
-        Order order = orderService.getOrderById(Long.valueOf(id));
+    public OrderResponse execute(Long id) {
+        Order order = orderService.getOrderById(id);
 
         List<OrderItemDTO> orderItems = order.getOrderItems().stream()
-                .map(item -> new OrderItemDTO(item.getItem().getId().toString(), item.getQuantity()))
+                .map(item -> new OrderItemDTO(item.getItem().getId(), item.getQuantity()))
                 .collect(Collectors.toList());
 
         return new OrderResponse(
-                order.getId().toString(),
+                order.getId(),
                 order.getStatus(),
                 orderItems,
                 order.getTotalAmount(),

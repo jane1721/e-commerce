@@ -45,11 +45,11 @@ public class CartController {
     @Operation(summary = "장바구니 조회", description = "사용자의 장바구니에 담긴 상품 리스트를 조회합니다.")
     @Parameter(name = "userId", description = "사용자 ID", required = true)
     @GetMapping("/users/{userId}")
-    public ResponseEntity<BaseResponseContent> getCartItems(@PathVariable String userId) {
+    public ResponseEntity<BaseResponseContent> getCartItems(@PathVariable Long userId) {
 
         List<CartItemResponse> items = new ArrayList<>();
-        items.add(new CartItemResponse("1", "Item A", 2, 5000));
-        items.add(new CartItemResponse("2", "Item B", 6, 8000));
+        items.add(new CartItemResponse(1L, "Item A", 2, 5000));
+        items.add(new CartItemResponse(2L, "Item B", 6, 8000));
 
         BaseResponseContent responseContent = new BaseResponseContent(items);
 

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderResponse {
 
-    String id;
+    Long id;
     OrderStatus status;
     List<OrderItemDTO> orderItems;
     BigDecimal totalAmount;

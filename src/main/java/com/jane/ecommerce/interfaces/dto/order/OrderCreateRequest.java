@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderCreateRequest {
 
-    String userId;
+    Long userId;
     List<OrderItemDTO> orderItems;
-    String userCouponId;
+    Long userCouponId;
 }

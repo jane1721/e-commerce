@@ -50,7 +50,7 @@ class CreateOrderUseCaseConcurrencyTest extends IntegrationTest {
         UserCoupon userCoupon = userCouponRepository.save(UserCoupon.create(user, coupon, false));
 
         // OrderItemDTO 생성
-        OrderItemDTO orderItemDTO = new OrderItemDTO(item.getId().toString(), 2); // 아이템 ID, 주문 수량
+        OrderItemDTO orderItemDTO = new OrderItemDTO(item.getId(), 2); // 아이템 ID, 주문 수량
 
         // 동시성 테스트 준비
         int concurrentRequests = 10;
@@ -61,12 +61,12 @@ class CreateOrderUseCaseConcurrencyTest extends IntegrationTest {
         for (int i = 0; i < concurrentRequests; i++) {
             futures[i] = CompletableFuture.runAsync(() -> {
                 var response = createOrderUseCase.execute(
-                        user.getId().toString(),
+                        user.getId(),
                         List.of(orderItemDTO),
-                        userCoupon.getId().toString()
+                        userCoupon.getId()
                 );
                 assertThat(response).isNotNull();
-                assertThat(response.getId()).isNotBlank();
+                assertThat(response.getId()).isNotNull();
             }, executor);
         }
 

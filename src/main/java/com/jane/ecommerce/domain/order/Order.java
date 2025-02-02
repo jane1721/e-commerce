@@ -7,6 +7,7 @@ import com.jane.ecommerce.domain.user.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,26 @@ public class Order extends BaseEntity {
     public void addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
         orderItem.setOrder(this); // 양방향 관계 설정
+    }
+
+    // 전체 주문 금액 계산
+    public void calculateTotalAmount() {
+
+        totalAmount = orderItems.stream()
+                .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // 쿠폰 적용하여 최종 주문 금액 계산
+    public void calculateFinalAmount() {
+
+        if (userCoupon != null && userCoupon.getCoupon() != null) {
+            BigDecimal discountPercent = BigDecimal.valueOf(userCoupon.getCoupon().getDiscountPercent());
+            BigDecimal discountFactor = BigDecimal.ONE.subtract(discountPercent.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+            finalAmount = totalAmount.multiply(discountFactor); // 할인 비율을 적용하여 최종 금액 계산
+        } else {
+            finalAmount = totalAmount; // 쿠폰이 없는 경우 최종 금액은 전체 금액과 동일
+        }
     }
 
     private Order(Long id, User user, UserCoupon userCoupon, BigDecimal totalAmount, BigDecimal finalAmount, OrderStatus status, List<OrderItem> orderItems, Payment payment) {

@@ -1,10 +1,12 @@
 package com.jane.ecommerce.interfaces.dto.response;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class BaseResponsePage<T> extends BaseResponseContent {
 

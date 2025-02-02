@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartItemResponse {
 
-    String itemId;
+    Long itemId;
     String name;
     int quantity;
     int price;
