@@ -6,11 +6,13 @@ import com.jane.ecommerce.domain.user.User;
 import com.jane.ecommerce.domain.user.UserRepository;
 import com.jane.ecommerce.support.aop.annotation.DistributedLock;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -19,6 +21,36 @@ public class CouponService {
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
+    private final CouponQueueRepository couponQueueRepository;
+
+    // 대기열에 쿠폰 발급 요청 추가
+    public void addCouponRequestToQueue(Long userId, Long couponId) {
+        log.info("Processing coupon queue for couponId: {}", couponId);
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(couponId) }));
+
+        couponQueueRepository.validateCouponAvailability(couponId, coupon.getQuantity());
+        couponQueueRepository.checkDuplicateRequest(userId, couponId);
+        couponQueueRepository.addToQueue(userId, couponId);
+    }
+
+    // 대기열에서 쿠폰 발급 처리
+    @Transactional
+    public void processCouponQueue(Long couponId, int claimCount) {
+        log.info("Processing coupon queue for couponId: {}", couponId);
+
+        for (int i = 0; i < claimCount; i++) {
+
+            Long userId = couponQueueRepository.popFromQueue(couponId);
+
+            try {
+                claimCoupon(userId, couponId);  // 기존 쿠폰 발급 로직 호출
+            } catch (CustomException e) {
+                // 발급 실패 시 로그 처리
+                log.error("쿠폰 발급 실패: userId={} couponId={}", userId, couponId);
+            }
+        }
+    }
 
     // 쿠폰 발급
     @DistributedLock(key = "#couponId")
