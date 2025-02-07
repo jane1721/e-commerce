@@ -24,7 +24,7 @@ public class UserService {
     public ChargeResponse chargeBalance(ChargeRequest request) {
 
         // 유저 조회
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findByIdWithPessimisticLock(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(request.getUserId()) }));
 
         // 도메인 엔티티 메서드 호출
