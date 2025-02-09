@@ -1,36 +1,30 @@
 package com.jane.ecommerce.infrastructure.persistence.coupon;
 
-import com.jane.ecommerce.domain.error.CustomException;
-import com.jane.ecommerce.domain.error.ErrorCode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
+@RequiredArgsConstructor
 @Repository
 public class CouponQueueRedisRepository {
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    // 쿠폰 발급 가능 여부 검증
-    public void validateCouponAvailability(Long couponId, int totalQuantity) {
+    // 쿠폰 발급 가능 여부 반환
+    public boolean isCouponAvailable(Long couponId, int totalQuantity) {
         String userCouponKey = "couponClaimed:" + couponId;
         Long claimedCount = redisTemplate.opsForSet().size(userCouponKey);
 
-        if (claimedCount != null && claimedCount >= totalQuantity) {
-            throw new CustomException(ErrorCode.INSUFFICIENT_COUPON_STOCK, new String[]{ String.valueOf(couponId) });
-        }
+        return claimedCount < totalQuantity;
     }
 
-    // 중복 요청 검증
-    public void checkDuplicateRequest(Long userId, Long couponId) {
+    // 중복 요청 여부 반환
+    public boolean isDuplicateRequest(Long userId, Long couponId) {
         String userCouponKey = "couponClaimed:" + couponId;
         String userClaimKey = userId + ":" + couponId;
 
-        if (Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(userCouponKey, userClaimKey))) {
-            throw new CustomException(ErrorCode.DUPLICATE_COUPON_CLAIM, new String[]{ String.valueOf(userId) });
-        }
+        return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(userCouponKey, userClaimKey));
     }
 
     // 대기열에 추가

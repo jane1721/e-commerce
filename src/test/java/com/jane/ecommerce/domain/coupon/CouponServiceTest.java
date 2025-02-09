@@ -43,8 +43,8 @@ public class CouponServiceTest {
 
         // mocking
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
-        doNothing().when(couponQueueRepository).validateCouponAvailability(couponId, coupon.getQuantity());
-        doNothing().when(couponQueueRepository).checkDuplicateRequest(userId, couponId);
+        when(couponQueueRepository.isCouponAvailable(couponId, coupon.getQuantity())).thenReturn(true);
+        when(couponQueueRepository.isDuplicateRequest(userId, couponId)).thenReturn(false);
         doNothing().when(couponQueueRepository).addToQueue(userId, couponId);
 
         // when
@@ -52,8 +52,8 @@ public class CouponServiceTest {
 
         // then
         verify(couponRepository, times(1)).findById(couponId);
-        verify(couponQueueRepository, times(1)).validateCouponAvailability(couponId, coupon.getQuantity());
-        verify(couponQueueRepository, times(1)).checkDuplicateRequest(userId, couponId);
+        verify(couponQueueRepository, times(1)).isCouponAvailable(couponId, coupon.getQuantity());
+        verify(couponQueueRepository, times(1)).isDuplicateRequest(userId, couponId);
         verify(couponQueueRepository, times(1)).addToQueue(userId, couponId);
     }
 
@@ -67,8 +67,7 @@ public class CouponServiceTest {
 
         // mocking
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
-        doThrow(new CustomException(ErrorCode.INSUFFICIENT_COUPON_STOCK, new String[]{ String.valueOf(couponId) }))
-                .when(couponQueueRepository).validateCouponAvailability(couponId, coupon.getQuantity());
+        when(couponQueueRepository.isCouponAvailable(couponId, coupon.getQuantity())).thenReturn(false);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> couponService.addCouponRequestToQueue(userId, couponId));
@@ -76,8 +75,8 @@ public class CouponServiceTest {
         // then
         assertEquals(ErrorCode.INSUFFICIENT_COUPON_STOCK, exception.getErrorCode());
         verify(couponRepository, times(1)).findById(couponId);
-        verify(couponQueueRepository, times(1)).validateCouponAvailability(couponId, coupon.getQuantity());
-        verify(couponQueueRepository, never()).checkDuplicateRequest(userId, couponId); // 재고 부족 시 이후 로직 타지 않음
+        verify(couponQueueRepository, times(1)).isCouponAvailable(couponId, coupon.getQuantity());
+        verify(couponQueueRepository, never()).isDuplicateRequest(userId, couponId); // 재고 부족 시 이후 로직 타지 않음
         verify(couponQueueRepository, never()).addToQueue(userId, couponId);
     }
 
@@ -91,9 +90,8 @@ public class CouponServiceTest {
 
         // mocking
         when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
-        doNothing().when(couponQueueRepository).validateCouponAvailability(couponId, coupon.getQuantity());
-        doThrow(new CustomException(ErrorCode.DUPLICATE_COUPON_CLAIM, new String[]{String.valueOf(userId)}))
-                .when(couponQueueRepository).checkDuplicateRequest(userId, couponId);
+        when(couponQueueRepository.isCouponAvailable(couponId, coupon.getQuantity())).thenReturn(true);
+        when(couponQueueRepository.isDuplicateRequest(userId, couponId)).thenReturn(true);
 
         // when
         CustomException exception = assertThrows(CustomException.class,
@@ -102,8 +100,8 @@ public class CouponServiceTest {
         // then
         assertEquals(ErrorCode.DUPLICATE_COUPON_CLAIM, exception.getErrorCode());
         verify(couponRepository, times(1)).findById(couponId);
-        verify(couponQueueRepository, times(1)).validateCouponAvailability(couponId, coupon.getQuantity());
-        verify(couponQueueRepository, times(1)).checkDuplicateRequest(userId, couponId);
+        verify(couponQueueRepository, times(1)).isCouponAvailable(couponId, coupon.getQuantity());
+        verify(couponQueueRepository, times(1)).isDuplicateRequest(userId, couponId);
         verify(couponQueueRepository, never()).addToQueue(userId, couponId); // 중복 요청 시 대기열에 추가되지 않음
     }
 
@@ -158,7 +156,7 @@ public class CouponServiceTest {
         User user = User.of(userId, null, null, null);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findByIdWithPessimisticLock(couponId)).thenReturn(Optional.empty());
+        when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));
@@ -181,7 +179,7 @@ public class CouponServiceTest {
         Coupon coupon = Coupon.of(couponId, null, null, null, 0);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findByIdWithPessimisticLock(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> couponService.claimCoupon(userId, couponId));

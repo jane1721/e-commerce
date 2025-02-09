@@ -25,12 +25,24 @@ public class CouponService {
 
     // 대기열에 쿠폰 발급 요청 추가
     public void addCouponRequestToQueue(Long userId, Long couponId) {
-        log.info("Processing coupon queue for couponId: {}", couponId);
+        log.info("Adding coupon request queue to queue for userId: {} couponId: {}", userId, couponId);
+
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, new String[]{ String.valueOf(couponId) }));
 
-        couponQueueRepository.validateCouponAvailability(couponId, coupon.getQuantity());
-        couponQueueRepository.checkDuplicateRequest(userId, couponId);
+        // 쿠폰 발급 가능 여부 검증
+        boolean isCouponAvailable = couponQueueRepository.isCouponAvailable(couponId, coupon.getQuantity());
+        if (!isCouponAvailable) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_COUPON_STOCK, new String[]{ String.valueOf(couponId) });
+        }
+
+        // 중복 요청 여부 검증
+        boolean isDuplicateRequest = couponQueueRepository.isDuplicateRequest(userId, couponId);
+        if (isDuplicateRequest) {
+            throw new CustomException(ErrorCode.DUPLICATE_COUPON_CLAIM, new String[]{ String.valueOf(userId) });
+        }
+
+        // 대기열에 추가
         couponQueueRepository.addToQueue(userId, couponId);
     }
 

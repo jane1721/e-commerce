@@ -31,13 +31,13 @@ public class CouponRepositoryImpl implements CouponRepository, CouponQueueReposi
     }
 
     @Override
-    public void validateCouponAvailability(Long couponId, int quantity) {
-        couponQueueRedisRepository.validateCouponAvailability(couponId, quantity);
+    public boolean isCouponAvailable(Long couponId, int quantity) {
+        return couponQueueRedisRepository.isCouponAvailable(couponId, quantity);
     }
 
     @Override
-    public void checkDuplicateRequest(Long userId, Long couponId) {
-        couponQueueRedisRepository.checkDuplicateRequest(userId, couponId);
+    public boolean isDuplicateRequest(Long userId, Long couponId) {
+        return couponQueueRedisRepository.isDuplicateRequest(userId, couponId);
     }
 
     @Override
