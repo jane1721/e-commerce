@@ -21,7 +21,9 @@ public enum ErrorCode {
     // Custom Error
     INSUFFICIENT_STOCK(HttpStatus.CONFLICT, "Insufficient stock for item"),
     INSUFFICIENT_BALANCE(HttpStatus.CONFLICT, "Insufficient fund for user"),
-    LOCK_FAILED(HttpStatus.CONFLICT, "Lock failed");
+    LOCK_FAILED(HttpStatus.CONFLICT, "Lock failed"),
+    INSUFFICIENT_COUPON_STOCK(HttpStatus.CONFLICT, "Insufficient stock for coupon"),
+    DUPLICATE_COUPON_CLAIM(HttpStatus.CONFLICT, "Duplicate coupon claim");
 
     private final HttpStatus httpStatus;
     private final String message;
