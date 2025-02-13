@@ -55,7 +55,7 @@ public class Coupon extends BaseEntity {
     // 쿠폰 발급
     public void claim() {
         if (this.quantity <= 0) {
-            throw new CustomException(ErrorCode.CONFLICT);
+            throw new CustomException(ErrorCode.INSUFFICIENT_COUPON_STOCK);
         }
 
         // 쿠폰 수량 감소
