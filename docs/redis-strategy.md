@@ -99,6 +99,79 @@ DB 의 데이터가 변경될 경우, 캐시를 어떻게 갱신할 지 결정�
 
 ---
 
+## 로컬 캐시 vs 분산 캐시
+
+### 1. 로컬 캐시
+Spring Boot 의 @Cacheable 를 기본 설정으로 사용하면, 캐시는 JVM 메모리 (Heap) 에 저장된다.  
+→ 즉, 서버가 여러 대일 경우 각 서버의 JVM 에 별도로 캐시가 저장되며, 서로 공유되지 않는다.
+
+**사용 예시**
+```java
+@RequiredArgsConstructor
+@Service
+public class ItemService {
+
+    private final ItemRepository itemRepository;
+  
+    @Cacheable(value = "products", key = "#id")
+    public Item getItemById(Long id) {
+        return itemRepository.findById(itemId).orElseThrow();
+    }
+}
+```
+- 캐시에 데이터가 없으면 DB 에서 조회 후 JVM 메모리에 저장
+- 같은 요청이 다시 들어오면 DB 조회 없이 캐시에서 가져옴
+
+**한계**
+1. JVM 내부에서만 캐시됨 → 서버를 재시작하면 캐시가 사라진다.
+2. 서버가 여러 대일 경우 캐시가 서버마다 따로 저장되어 일관성이 떨어진다. (A 서버에서 조회한 데이터가 B 서버에는 없음)
+3. 메모리 사용량이 증가하면 OutOfMemoryError 발생 가능하다.
+
+### 2. 분산 캐시 (Redis Cache)
+Redis 는 서버 외부에서 독립적으로 실행되는 캐시 서버로, 여러 서버에서 공유할 수 있다.
+→ 즉, 하나의 Redis 인스턴스를 여러 애플리케이션 서버가 동시에 사용할 수 있어 일관성을 유지할 수 있다.
+
+**사용 예시**
+
+```java
+import java.beans.BeanProperty;
+
+@EnableCaching
+@Configuration
+public class RedisConfig {
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        return RedisCacheManager.builder(redisConnectionFactory).build();
+    }
+}
+
+@RequiredArgsConstructor
+@Service
+public class ItemService {
+
+    private final ItemRepository itemRepository;
+  
+    @Cacheable(value = "products", key = "#id")
+    public Item getItemById(Long id) {
+        return itemRepository.findById(itemId).orElseThrow();
+    }
+}
+```
+
+**동작 방식**
+1. 처음 요청이 오면, Redis 에서 해당 키가 존재하는지 확인한다.
+2. 캐시 미스 (Cache Miss) → DB 에서 데이터를 가져온 후 Redis 에 저장한다.
+3. 캐시 히트 (Cache Hit) → Redis 에서 데이터를 반환한다.
+
+**Redis 캐시의 장점**
+1. 서버가 여러 대라도 동일한 Redis 캐시를 공유할 수 있다.
+2. 서버가 재시작 되어도 Redis 캐시가 유지된다.
+3. JVM 메모리를 사용하지 않으므로 OutOfMemoryError 방지 가능
+4. TTL (Time To Live) 설정으로 자동 만료 기능  
+   → 오래된 데이터 제거 가능
+
+---
+
 ## 이커머스 API 캐시 적용 방안
 
 ### 1. 상품 목록 조회 기능 (getItems)
