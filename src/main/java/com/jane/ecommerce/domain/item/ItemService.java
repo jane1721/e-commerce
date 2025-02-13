@@ -54,18 +54,16 @@ public class ItemService {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
 
         // 최근 3일간의 주문 목록 조회
-        List<Order> orders = orderRepository.findOrdersByCreatedAtAfter(threeDaysAgo);
+        List<Order> orders = orderRepository.findAllByCreatedAtAfterAndStatus(threeDaysAgo, OrderStatus.COMPLETED);
 
         // 판매된 상품 목록과 판매 수량을 집계하기 위한 Map
         Map<Long, Integer> itemSales = new HashMap<>();
 
         // 주문 아이템에서 상품과 수량을 추출하여 집계
         for (Order order : orders) {
-            if (order.getStatus().equals(OrderStatus.COMPLETED)) { // 완료된 주문만 고려
-                for (OrderItem orderItem : order.getOrderItems()) {
-                    Long itemId = orderItem.getItem().getId();
-                    itemSales.put(itemId, itemSales.getOrDefault(itemId, 0) + orderItem.getQuantity());
-                }
+            for (OrderItem orderItem : order.getOrderItems()) {
+                Long itemId = orderItem.getItem().getId();
+                itemSales.put(itemId, itemSales.getOrDefault(itemId, 0) + orderItem.getQuantity());
             }
         }
 

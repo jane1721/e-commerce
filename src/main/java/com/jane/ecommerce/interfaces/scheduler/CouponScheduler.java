@@ -1,4 +1,4 @@
-package com.jane.ecommerce.application.coupon;
+package com.jane.ecommerce.interfaces.scheduler;
 
 import com.jane.ecommerce.domain.coupon.CouponService;
 import lombok.RequiredArgsConstructor;

@@ -6,6 +6,8 @@ import com.jane.ecommerce.domain.order.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import com.jane.ecommerce.domain.order.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +33,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findOrdersByCreatedAtAfter(LocalDateTime threeDaysAgo) {
-        return orderJpaRepository.findOrdersByCreatedAtAfter(threeDaysAgo);
+    public List<Order> findAllByCreatedAtAfterAndStatus(LocalDateTime createdAt, OrderStatus orderStatus) {
+        return orderJpaRepository.findAllByCreatedAtAfterAndStatus(createdAt, orderStatus);
     }
 }
