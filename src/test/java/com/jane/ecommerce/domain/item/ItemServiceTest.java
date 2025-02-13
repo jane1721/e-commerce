@@ -121,7 +121,7 @@ public class ItemServiceTest {
         orders.add(order);
 
         // Repository 모킹
-        when(orderRepository.findOrdersByCreatedAtAfter(any(LocalDateTime.class))).thenReturn(orders);
+        when(orderRepository.findAllByCreatedAtAfterAndStatus(any(LocalDateTime.class), OrderStatus.COMPLETED)).thenReturn(orders);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(itemA));
         when(itemRepository.findById(2L)).thenReturn(Optional.of(itemB));
 
