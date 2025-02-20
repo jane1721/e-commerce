@@ -58,14 +58,18 @@ spring:
     listener:
       ack-mode: manual
 
+e-commerce-api:
+  payment:
+    topic-name: local.commerce.payment-process-event.v1
+
 ---
 spring.config.activate.on-profile: local
 
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ecommerce?characterEncoding=UTF-8&serverTimezone=UTC
-    username: application
-    password: application
+    username: ecommerce
+    password: ecommerce
   jpa:
     open-in-view: true
     generate-ddl: true
