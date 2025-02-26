@@ -20,7 +20,7 @@ public class PaymentOutboxRepositoryImpl implements PaymentOutboxRepository {
 
     @Override
     public PaymentOutbox save(PaymentOutbox outbox) {
-        return paymentOutboxJpaRepository.save(PaymentOutboxEntity.toEntity(outbox)).toDomain();
+        return paymentOutboxJpaRepository.save(PaymentOutboxEntity.from(outbox)).toDomain();
     }
 
     @Override

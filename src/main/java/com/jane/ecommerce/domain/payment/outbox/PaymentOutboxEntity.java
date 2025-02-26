@@ -39,10 +39,12 @@ public class PaymentOutboxEntity extends BaseEntity {
                 .build();
     }
 
-    public static PaymentOutboxEntity toEntity(PaymentOutbox outbox) {
-        return new PaymentOutboxEntity(outbox.getId(),
+    public static PaymentOutboxEntity from(PaymentOutbox outbox) {
+        return new PaymentOutboxEntity(
+                outbox.getId(),
                 outbox.getMessage(),
                 outbox.getStatus(),
-                outbox.getCount());
+                outbox.getCount()
+        );
     }
 }
