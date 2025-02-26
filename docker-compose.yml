@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "13306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=application
+      - MYSQL_PASSWORD=application
+      - MYSQL_DATABASE=ecommerce
+    volumes:
+      - ./data/mysql/:/var/lib/mysql
+
   mysql-ecommerce-test1:
     image: mysql:8.0
     ports:
@@ -12,6 +24,7 @@ services:
       - MYSQL_DATABASE=ecommerce
     volumes:
       - ./data/mysql-test1/:/var/lib/mysql
+
   mysql-ecommerce-test2:
     image: mysql:8.0
     ports:
@@ -24,6 +37,10 @@ services:
     volumes:
       - ./data/mysql-test2/:/var/lib/mysql
 
+  redis:
+    image: redis:7.0
+    ports:
+      - "6379:6379"
 
   zookeeper:
     image: bitnami/zookeeper:3.9.0
@@ -39,7 +56,6 @@ services:
     ports:
       - "19092:19092"
     container_name: kafka-1
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -55,7 +71,6 @@ services:
     ports:
       - "19093:19093"
     container_name: kafka-2
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -71,7 +86,6 @@ services:
     ports:
       - "19094:19094"
     container_name: kafka-3
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -97,6 +111,38 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9093,kafka-3:9094
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
       - DYNAMIC_CONFIG_ENABLED=true
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana-provisioning:/etc/grafana/provisioning
+      - ./grafana-dashboard:/dashboard
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --web.enable-remote-write-receiver
+      - --enable-feature=native-histograms
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./k6-scripts:/scripts
+    command: run -o experimental-prometheus-rw /scripts/stress.js
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - prometheus
 
 networks:
   default:
