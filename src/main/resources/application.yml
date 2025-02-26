@@ -48,6 +48,10 @@ spring:
     listener:
       ack-mode: manual
 
+e-commerce-api:
+  test:
+    topic-name: test-topic
+
 ---
 spring.config.activate.on-profile: local
 
