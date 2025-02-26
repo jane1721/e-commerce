@@ -1,29 +1,46 @@
 version: '3'
 
 services:
-  mysql-ecommerce-test1:
+  mysql:
     image: mysql:8.0
     ports:
-      - "3307:3306"
+      - "13306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=application
       - MYSQL_PASSWORD=application
       - MYSQL_DATABASE=ecommerce
     volumes:
-      - ./data/mysql-test1/:/var/lib/mysql
-  mysql-ecommerce-test2:
-    image: mysql:8.0
-    ports:
-      - "3308:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=application
-      - MYSQL_PASSWORD=application
-      - MYSQL_DATABASE=ecommerce
-    volumes:
-      - ./data/mysql-test2/:/var/lib/mysql
+      - ./data/mysql/:/var/lib/mysql
 
+#  mysql-ecommerce-test1:
+#    image: mysql:8.0
+#    ports:
+#      - "3307:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_USER=application
+#      - MYSQL_PASSWORD=application
+#      - MYSQL_DATABASE=ecommerce
+#    volumes:
+#      - ./data/mysql-test1/:/var/lib/mysql
+
+#  mysql-ecommerce-test2:
+#    image: mysql:8.0
+#    ports:
+#      - "3308:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_USER=application
+#      - MYSQL_PASSWORD=application
+#      - MYSQL_DATABASE=ecommerce
+#    volumes:
+#      - ./data/mysql-test2/:/var/lib/mysql
+
+  redis:
+    image: redis:7.0
+    ports:
+      - "6379:6379"
 
   zookeeper:
     image: bitnami/zookeeper:3.9.0
@@ -39,7 +56,6 @@ services:
     ports:
       - "19092:19092"
     container_name: kafka-1
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -55,7 +71,6 @@ services:
     ports:
       - "19093:19093"
     container_name: kafka-2
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -71,7 +86,6 @@ services:
     ports:
       - "19094:19094"
     container_name: kafka-3
-    restart: always
     depends_on:
       - zookeeper
     environment:
@@ -85,7 +99,7 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
-      - "9090:8080"
+      - "9000:8080"
     container_name: kafka-ui
     restart: always
     depends_on:
@@ -97,6 +111,34 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9093,kafka-3:9094
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
       - DYNAMIC_CONFIG_ENABLED=true
+
+  springboot-app:
+    build:
+      context: . # 현재 디렉토리의 Dockerfile 사용
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 2G  # 메모리 2GB로 제한
+          cpus: '2.0'  # CPU 2개 코어 사용
+    container_name: springboot-app
+    depends_on:
+      - mysql
+      - redis
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./k6-scripts:/k6-scripts  # k6-scripts 디렉토리를 컨테이너에 마운트
+    command: ["run", "/k6-scripts/load-test.js"]
+    depends_on:
+      - springboot-app  # springboot-app 이 먼저 실행된 후에 시작
+    container_name: k6-load-test
 
 networks:
   default:
