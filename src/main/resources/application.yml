@@ -58,6 +58,8 @@ spring:
       ack-mode: manual
 
 e-commerce-api:
+  payment:
+    topic-name: local.commerce.payment-process-event.v1
   test:
     topic-name: test-topic
 
